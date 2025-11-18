@@ -1,19 +1,18 @@
-<nav class="bg-gray-800 text-white">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex justify-between items-center h-16">
-        <!-- Logo / Brand -->
-        <div class="text-xl font-bold">
-          MyBrand
-        </div>
-  
-        <!-- Navigation Links -->
-        <div class="flex space-x-6">
-          <a href="#" class="hover:text-gray-300">Home</a>
-          <a href="#" class="hover:text-gray-300">About</a>
-          <a href="#" class="hover:text-gray-300">Services</a>
-          <a href="#" class="hover:text-gray-300">Contact</a>
+<div class="min-h-full">
+  <nav class="bg-gray-800/50">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <div class="flex items-center">
+          <div class="shrink-0">
+            <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" class="size-8" />
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <x-nav-link href="/" :active="request() -> is('/')"> Dashboard </x-nav-link>
+              <x-nav-link href="/farmers" :active="request() -> is('farmers')"> Farmers </x-nav-link>
+              <x-nav-link href="/me"  :active="request() -> is('me')"> Me </x-nav-link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </nav>
-  
