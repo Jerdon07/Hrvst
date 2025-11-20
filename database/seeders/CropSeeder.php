@@ -13,26 +13,14 @@ class CropSeeder extends Seeder
      */
     public function run(): void
     {
-        $items = [
-            'Vegetables' => ['Carrot', 'Broccoli', 'Spinach', 'Lettuce', 'Cabbage'],
-            'Fruits' => ['Apple', 'Banana', 'Orange', 'Grapes', 'Mango'],
-            'Grains' => ['Wheat', 'Rice', 'Corn', 'Barley', 'Oats'],
-            'Pulses' => ['Lentils', 'Chickpeas', 'Beans', 'Peas', 'Soybeans'],
-            'Tubers' => ['Potato', 'Sweet Potato', 'Yam', 'Cassava', 'Taro'],
-            'Beverages' => ['Coffee Beans', 'Cocoa', 'Sugarcane', 'Barley'],
+        $crops = [
+            ['category_id' => 1, 'name' => 'Carrot', 'price' => 0],
+            ['category_id' => 1, 'name' => 'Cabbage', 'price' => 0],
+            ['category_id' => 2, 'name' => 'Banana', 'price' => 0],
         ];
 
-        foreach($items as $categoryName => $crops) {
-            $category = Category::firstOrCreate(['name' => $categoryName]);
-
-            foreach($crops as $cropName) {
-                Crop::create([
-                    'category_id' => $category->id,
-                    'name' => $cropName,
-                    'price' => 0,
-                    'image_path' => null,
-                ]);
-            }
+        foreach ($crops as $crop) {
+            Crop::create($crop);
         }
 
     }
