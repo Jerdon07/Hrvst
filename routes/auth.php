@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FarmerApprovalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -11,6 +12,18 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('admin/farmers/pending', [FarmerApprovalController::class, 'index'])
+        ->name('admin.farmers.pending');
+
+    Route::post('admin/farmers/approve-all', [FarmerApprovalController::class, 'approveAll'])
+        ->name('admin.farmers.approveAll');
+
+    Route::post('admin/farmers/{id}/approve', [FarmerApprovalController::class, 'approve'])
+        ->name('admin.farmers.approve');
+});
+
+// Bootstraped routes for authentication...
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
