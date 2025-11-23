@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MunicipalitySeeder::class,
             BarangaySeeder::class,
+            SitioSeeder::class,
             CategorySeeder::class,  
             CropSeeder::class,
         ]);
@@ -25,7 +27,7 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate([
             'name' => env('ADMIN_NAME', 'Admin User'),
             'email' => env('ADMIN_EMAIL', 'admin@email.com'),
-            'password' => bcrypt(env('ADMIN_PASSWORD', 'admin123')),
+            'password' => Hash::make(env('ADMIN_PASSWORD', 'admin123')),
             'role' => 'admin',
             'status' => 'approved',
         ]);
