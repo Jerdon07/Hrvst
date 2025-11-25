@@ -27,12 +27,10 @@ class MunicipalitySeeder extends Seeder
             'Sablan',
             'Tuba',
             'Tublay',
-
-            'Baguio City',
         ];
 
         foreach ($municipalities as $name) {
-            Municipality::create(['name' => $name]);
+            Municipality::FirstOrCreate(['name' => $name]);
         }
     }
 }

@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('farmers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('municipalitiy_id')->constrained('municipalities');
+            $table->foreignId('municipality_id')->constrained('municipalities');
             $table->foreignId('barangay_id')->constrained('barangays');
             $table->foreignId('sitio_id')->constrained('sitios');
+            $table->decimal('latitude', 16, 17);
+            $table->decimal('longitude', 120, 15);
             $table->timestamps();
         });
     }

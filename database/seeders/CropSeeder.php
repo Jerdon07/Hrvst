@@ -20,7 +20,7 @@ class CropSeeder extends Seeder
         ];
 
         foreach ($crops as $crop) {
-            Crop::create($crop);
+            Crop::FirstOrCreate($crop);
         }
 
     }

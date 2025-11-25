@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Index({ crops, categories }) {
@@ -55,10 +55,9 @@ export default function Index({ crops, categories }) {
 
     const submit = (e) => {
         e.preventDefault();
-
+    
         if (editingCrop) {
             post(route('admin.crops.update', editingCrop.id), {
-                _method: 'put',
                 forceFormData: true,
                 onSuccess: () => closeModal(),
             });
@@ -66,6 +65,16 @@ export default function Index({ crops, categories }) {
             post(route('admin.crops.store'), {
                 forceFormData: true,
                 onSuccess: () => closeModal(),
+            });
+        }
+    };
+
+    const handleDelete = (crop) => {
+        if (confirm(`Are you sure you want to delete ${crop.name}? This action cannot be undone.`)) {
+            router.delete(route('admin.crops.destroy', crop.id), {
+                onSuccess: () => {
+                    "Deleted Successfully"
+                }
             });
         }
     };
@@ -79,7 +88,7 @@ export default function Index({ crops, categories }) {
                     </h2>
                     <button
                         onClick={openCreateModal}
-                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
                     >
                         Add New Crop
                     </button>
@@ -92,33 +101,51 @@ export default function Index({ crops, categories }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {crops.map((crop) => (
-                                    <div
+                            {crops.length === 0 ? (
+                                <p className="text-center text-gray-500">No crops available. Add your first crop.</p>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {crops.map((crop) => (
+                                        <div
                                         key={crop.id}
-                                        className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+                                        className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow"
                                     >
-                                        {crop.image && (
-                                            <img
-                                                src={`/storage/${crop.image}`}
-                                                alt={crop.name}
-                                                className="w-full h-48 object-cover rounded-md mb-4"
-                                            />
-                                        )}
-                                        <h3 className="text-lg font-semibold">{crop.name}</h3>
+                                        <div className="aspect-square bg-gray-100 rounded-md mb-4 overflow-hidden">
+                                            {crop.image ? (
+                                                <img
+                                                    src={`/storage/${crop.image}`}
+                                                    alt={crop.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                    No Image
+                                                </div>
+                                            )}
+                                        </div>
+                                        <h3 className="text-lg font-semibold text-gray-800">{crop.name}</h3>
                                         <p className="text-sm text-gray-600">{crop.category.name}</p>
                                         <p className="text-xl font-bold text-green-600 mt-2">
                                             ₱{parseFloat(crop.price).toFixed(2)}
                                         </p>
-                                        <button
-                                            onClick={() => openEditModal(crop)}
-                                            className="mt-4 w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
-                                        >
-                                            Edit
-                                        </button>
+                                        <div className="mt-4 flex gap-2">
+                                            <button
+                                                onClick={() => openEditModal(crop)}
+                                                className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(crop)}
+                                                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -126,9 +153,9 @@ export default function Index({ crops, categories }) {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h3 className="text-lg font-semibold mb-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+                        <h3 className="text-lg font-semibold mb-4 text-gray-800">
                             {editingCrop ? 'Edit Crop' : 'Add New Crop'}
                         </h3>
                         <form onSubmit={submit}>
@@ -140,7 +167,8 @@ export default function Index({ crops, categories }) {
                                     type="text"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
-                                    className="w-full border-gray-300 rounded-md shadow-sm"
+                                    className="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500"
+                                    placeholder="e.g., Cabbage"
                                 />
                                 {errors.name && (
                                     <p className="text-red-600 text-sm mt-1">{errors.name}</p>
@@ -154,7 +182,7 @@ export default function Index({ crops, categories }) {
                                 <select
                                     value={data.category_id}
                                     onChange={(e) => setData('category_id', e.target.value)}
-                                    className="w-full border-gray-300 rounded-md shadow-sm"
+                                    className="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500"
                                 >
                                     <option value="">Select Category</option>
                                     {categories.map((category) => (
@@ -177,7 +205,8 @@ export default function Index({ crops, categories }) {
                                     step="0.01"
                                     value={data.price}
                                     onChange={(e) => setData('price', e.target.value)}
-                                    className="w-full border-gray-300 rounded-md shadow-sm"
+                                    className="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500"
+                                    placeholder="0.00"
                                 />
                                 {errors.price && (
                                     <p className="text-red-600 text-sm mt-1">{errors.price}</p>
@@ -192,34 +221,36 @@ export default function Index({ crops, categories }) {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleImageChange}
-                                    className="w-full"
+                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                                 />
                                 {errors.image && (
                                     <p className="text-red-600 text-sm mt-1">{errors.image}</p>
                                 )}
                                 {imagePreview && (
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="mt-2 w-full h-48 object-cover rounded-md"
-                                    />
+                                    <div className="mt-3">
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="w-full h-48 object-cover rounded-md border border-gray-200"
+                                        />
+                                    </div>
                                 )}
                             </div>
 
-                            <div className="flex justify-end space-x-2">
+                            <div className="flex justify-end space-x-2 mt-6">
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+                                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {processing ? 'Saving...' : 'Save'}
+                                    {processing ? 'Saving...' : 'Save Crop'}
                                 </button>
                             </div>
                         </form>

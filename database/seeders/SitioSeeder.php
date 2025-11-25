@@ -18,7 +18,7 @@ class SitioSeeder extends Seeder
         $ambiang = Barangay::where('name', 'Ambiang')->first();
             $ambiangs = ['Cabalitian', 'Calunetan', 'Fugu', 'Lingsat', 'Magsaysay', 'Pangil', 'Sibucao'];
         foreach ($ambiangs as $sitio) {
-            Sitio::create([
+            Sitio::FirstOrCreate([
                 'barangay_id' => $ambiang->id,
                 'name' => $sitio,
             ]);
@@ -27,7 +27,7 @@ class SitioSeeder extends Seeder
         $caliking = Barangay::where('name', 'Caliking')->first();
             $calikings = ['Bannawag', 'Capangan', 'Daclan', 'Laoag', 'Mabato', 'Poblacion', 'San Isidro'];
         foreach ($calikings as $sitio) {
-            Sitio::create([
+            Sitio::FirstOrCreate([
                 'barangay_id' => $caliking->id,
                 'name' => $sitio,
             ]);

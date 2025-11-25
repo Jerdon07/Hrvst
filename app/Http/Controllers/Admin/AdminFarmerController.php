@@ -30,11 +30,11 @@ class AdminFarmerController extends Controller
         }
 
         $approvedFarmers = (clone $query)->whereHas('user', function($q) {
-            $q->where(-'isApproved', true);
+            $q->where('isApproved', true);
         });
 
         $pendingFarmers = (clone $query)->whereHas('user', function($q) {
-            $q->where(-'isApproved', false);
+            $q->where('isApproved', false);
         });
 
         $municipalities = Municipality::all();

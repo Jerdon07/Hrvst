@@ -33,7 +33,7 @@ class Farmer extends Model
 
     public function crops()
     {
-        return $this->hasMany(Crop::class, 'farmer_crop')
+        return $this->belongsToMany(Crop::class, 'farmer_crop')
                     ->withTimestamps();
     }
 }

@@ -30,13 +30,26 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        Log::info('Login attempt starter');
+
         $request->authenticate();
+        Log::info('Authentication passed');
 
         $request->session()->regenerate();
+        Log::info('Session regenerated');
+        Log::info('Session ID after regenerate', ['session_id' => session()->getId()]);
+        Log::info('Session data', ['data' => session()->all()]);
 
         $user = Auth::user();
+        Log::info('User retrieved', ['id' => $user->id, 'isAdmin' => $user->isAdmin]);
+
+        if (!$user->isAdmin && !$user->isApproved) {
+            
+            return redirect()->route('login');
+        }
 
         if ($user->isAdmin) {
+            Log::info('Redirecting to admin.crops.index');
             return redirect()->route('admin.crops.index');
         };
         if (!$user->isApproved) {

@@ -182,7 +182,7 @@ class BarangaySeeder extends Seeder
         ];
 
         foreach ($barangays as $brgy) {
-            Barangay::create($brgy);
+            Barangay::FirstOrCreate($brgy);
         }
     }
 }

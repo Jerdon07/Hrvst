@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'phone_number' => 'required|string|max',
+            'phone_number' => 'required|string|max:20',
             'municipality_id' => 'required|exists:municipalities,id',
             'barangay_id' => 'required|exists:barangays,id',
             'sitio_id' => 'required|exists:sitios,id',
@@ -67,6 +67,7 @@ class RegisteredUserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'phone_number' => $request->phone_number,
                 'isAdmin' => false,
                 'isApproved' => false,
             ]);
@@ -76,7 +77,6 @@ class RegisteredUserController extends Controller
                 'municipality_id' => $request->municipality_id,
                 'barangay_id' => $request->barangay_id,
                 'sitio_id' => $request->sitio_id,
-                'phone_number' => $request->phone_number,
                 'latitude' => $latitude,
                 'longitude' => $longitude,
             ]);

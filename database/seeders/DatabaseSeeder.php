@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
             MunicipalitySeeder::class,
             BarangaySeeder::class,
             SitioSeeder::class,
-            //CategorySeeder::class,  
-            //CropSeeder::class,
+            CategorySeeder::class,  
+            CropSeeder::class,
         ]);
 
         // User::factory(10)->create();
@@ -32,12 +32,14 @@ class DatabaseSeeder extends Seeder
         //     'status' => 'approved',
         // ]);
 
-        User::firstOrCreate([
+        User::FirstOrCreate([
+            'email' => 'admin@email.com'
+        ], [
             'name' => 'Admin User',
-            'email' => 'admin@email.com',
-            'password' => 'password',
+            'password' => Hash::make('password'),
             'isAdmin' => true,
             'isApproved' => true,
+            'phone_number' => '091234567'
         ]);
     }
 }
