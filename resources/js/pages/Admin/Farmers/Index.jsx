@@ -163,11 +163,12 @@ export default function Index({ approvedFarmers, pendingFarmers, municipalities,
                                     <select
                                         value={selectedSitio}
                                         onChange={(e) => setSelectedSitio(e.target.value)}
-                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500"
+                                        disabled={!selectedBarangay}
+                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 disabled:bg-gray-100"
                                     >
                                         <option value="">All Sitios</option>
-                                        {municipalities.map(m => (
-                                            <option key={m.id} value={m.id}>{m.name}</option>
+                                        {sitios.map(b => (
+                                            <option key={b.id} value={b.id}>{b.name}</option>
                                         ))}
                                     </select>
                                 </div>
