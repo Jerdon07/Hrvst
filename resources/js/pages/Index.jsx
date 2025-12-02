@@ -1,96 +1,126 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import Navigation from '@/Components/Navigation';
+import { Link, Head } from '@inertiajs/react';
 
-export default function Index() {
-    const user = usePage().props.auth?.user;
-
+export default function Welcome({ auth }) {
     return (
         <>
-            <div className="bg-white font-sans">
+            <Head title="Welcome to Hrvst" />
 
-            <Navigation user={user} />
+            <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+                {/* Navigation */}
+                <nav className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center h-16">
+                            <div className="flex items-center space-x-2">
+                                <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                                </svg>
+                                <span className="text-2xl font-bold text-gray-800">Hrvst</span>
+                            </div>
 
-            {/* Hero Section */}
-            <section className="bg-green-100 py-24 px-6 md:px-20 flex flex-col md:flex-row items-center justify-between">
-                <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-700">
-                    Crop Prices Updates
-                    <span className="text-green-600 block">from Trading Post</span>
-                </h1>
-                <p className="mt-4 text-gray-600 text-sm">
-                    All information is provided by the Benguet Trading Post Cooperatives
-                </p>
-                </div>
-
-                <div className="mt-10 md:mt-0">
-                <div className="w-64 h-48 bg-green-500 rounded-lg flex items-center justify-center">
-                    {/* <img src="/mnt/data/Harvest_Image_Logo.png" alt="Preview" className="w-32 h-24 opacity-80" /> */}
-                </div>
-                </div>
-            </section>
-
-            {/* Footer */}
-            <footer className="bg-black text-gray-300 py-16 px-6 md:px-20">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-
-                {/* Logo */}
-                <div>
-                    <div className="flex items-center space-x-2 mb-4">
-                    {/* <img src="/mnt/data/Harvest_Image_Logo.png" alt="Logo" className="w-8 h-8 object-contain" /> */}
-                    <span className="text-lg font-semibold text-white">HrvsT</span>
+                            <div className="flex items-center space-x-4">
+                                {auth.user ? (
+                                    <>
+                                        <Link
+                                            href={route('farmers.index')}
+                                            className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium"
+                                        >
+                                            Farmers
+                                        </Link>
+                                        <Link
+                                            href={route('crops.index')}
+                                            className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium"
+                                        >
+                                            Crops
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href={route('login')}
+                                            className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium"
+                                        >
+                                            Log in
+                                        </Link>
+                                        <Link
+                                            href={route('register')}
+                                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium"
+                                        >
+                                            Sign up
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     </div>
+                </nav>
 
-                    <p className="text-sm">
-                    Copyright &copy; 2020 Nexcent ltd.<br />
-                    All rights reserved
-                    </p>
-
-                    <div className="flex space-x-4 mt-4">
-                    <div className="w-5 h-5 bg-gray-600 rounded-full"></div>
-                    <div className="w-5 h-5 bg-gray-600 rounded-full"></div>
-                    <div className="w-5 h-5 bg-gray-600 rounded-full"></div>
-                    <div className="w-5 h-5 bg-gray-600 rounded-full"></div>
-                    </div>
-                </div>
-
-                {/* Company */}
-                <div>
-                    <h3 className="text-white font-semibold mb-4">Company</h3>
-                    <ul className="space-y-2 text-sm">
-                    <li>About us</li>
-                    <li>Blog</li>
-                    <li>Contact us</li>
-                    <li>Pricing</li>
-                    <li>Testimonials</li>
-                    </ul>
-                </div>
-
-                {/* Support */}
-                <div>
-                    <h3 className="text-white font-semibold mb-4">Support</h3>
-                    <ul className="space-y-2 text-sm">
-                    <li>Help center</li>
-                    <li>Terms of service</li>
-                    <li>Legal</li>
-                    <li>Privacy policy</li>
-                    <li>Status</li>
-                    </ul>
-                </div>
-
-                {/* Newsletter */}
-                <div>
-                    <h3 className="text-white font-semibold mb-4">Stay up to date</h3>
-                    <div className="flex items-center bg-gray-800 px-3 py-2 rounded-md">
-                    <input type="email" placeholder="Your email address" className="bg-gray-800 text-sm w-full outline-none text-gray-300" />
-                    {/* This SVG is a self-closing tag and needs to be closed with '/>' */}
-                    <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2.94 2.94a1.5 1.5 0 012.12 0L10 7.88l4.94-4.94a1.5 1.5 0 112.12 2.12L12.12 10l4.94 4.94a1.5 1.5 0 01-2.12 2.12L10 12.12l-4.94 4.94a1.5 1.5 0 01-2.12-2.12L7.88 10 2.94 5.06a1.5 1.5 0 010-2.12z" />
-                    </svg>
+                {/* Hero Section */}
+                <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                            Welcome to <span className="text-green-600">Hrvst</span>
+                        </h1>
+                        <p className="text-xl text-gray-600 mb-8">
+                            Connecting farmers and traders in Benguet Province through a centralized crop pricing platform
+                        </p>
+                        <div className="flex gap-4 justify-center">
+                            <Link
+                                href={route('farmers.index')}
+                                className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium text-lg"
+                            >
+                                View Farmers
+                            </Link>
+                            <Link
+                                href={route('crops.index')}
+                                className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors font-medium text-lg"
+                            >
+                                View Crops
+                            </Link>
+                        </div>
                     </div>
                 </div>
 
+                {/* Features */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+                    <div className="grid md:grid-cols-3 gap-8">
+                        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">Find Farmers</h3>
+                            <p className="text-gray-600">
+                                Locate farmers across Benguet with our interactive map
+                            </p>
+                        </div>
+
+                        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">View Prices</h3>
+                            <p className="text-gray-600">
+                                Access up-to-date crop pricing information
+                            </p>
+                        </div>
+
+                        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">Connect</h3>
+                            <p className="text-gray-600">
+                                Bridge the gap between farmers and traders
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </footer>
             </div>
         </>
     );
