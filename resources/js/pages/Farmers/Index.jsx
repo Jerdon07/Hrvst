@@ -9,16 +9,14 @@ import FarmerProfilePanel from '@/Components/Sidebars/FarmerProfilePanel';
 import AdminPendingPanel from '@/Components/Sidebars/AdminPendingPanel';
 import FarmerDetailModal from '@/Components/Modals/FarmerDetailModal';
 
-export default function Index({ farmers, municipalities, barangays: initialBarangays, sitios: initialSitios, filters }) {
+export default function Index({ farmers, municipalities, barangays: initialBarangays, filters }) {
     const { auth, pendingFarmers } = usePage().props;
     const isAdmin = auth.user?.isAdmin;
     const isApprovedFarmer = auth.user && !auth.user.isAdmin && auth.user.isApproved;
 
     const [selectedMunicipality, setSelectedMunicipality] = useState(filters.municipality_id || '');
     const [selectedBarangay, setSelectedBarangay] = useState(filters.barangay_id || '');
-    const [selectedSitio, setSelectedSitio] = useState(filters.sitio_id || '');
     const [barangays, setBarangays] = useState(initialBarangays || []);
-    const [sitios, setSitios] = useState(initialSitios || []);
     const [selectedFarmer, setSelectedFarmer] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
@@ -26,14 +24,9 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         setBarangays(initialBarangays || []);
     }, [initialBarangays]);
 
-    useEffect(() => {
-        setSitios(initialSitios || []);
-    }, [initialSitios]);
-
     const handleMunicipalityChange = (municipalityId) => {
         setSelectedMunicipality(municipalityId);
         setSelectedBarangay('');
-        setSelectedSitio('');
         
         const params = {};
         if (municipalityId) params.municipality_id = municipalityId;
@@ -46,7 +39,6 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
 
     const handleBarangayChange = (barangayId) => {
         setSelectedBarangay(barangayId);
-        setSelectedSitio('');
         
         const params = {};
         if (selectedMunicipality) params.municipality_id = selectedMunicipality;
@@ -58,24 +50,9 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         });
     };
 
-    const handleSitioChange = (sitioId) => {
-        setSelectedSitio(sitioId);
-        
-        const params = {};
-        if (selectedMunicipality) params.municipality_id = selectedMunicipality;
-        if (selectedBarangay) params.barangay_id = selectedBarangay;
-        if (sitioId) params.sitio_id = sitioId;
-        
-        router.get(route('farmers.index'), params, {
-            preserveState: false,
-            replace: true,
-        });
-    };
-
     const handleClearFilters = () => {
         setSelectedMunicipality('');
         setSelectedBarangay('');
-        setSelectedSitio('');
         
         router.get(route('farmers.index'), {}, {
             preserveState: false,
@@ -92,8 +69,7 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         const avgLng = farmers.reduce((sum, f) => sum + parseFloat(f.longitude), 0) / farmers.length;
         
         let zoom = 10;
-        if (selectedSitio) zoom = 15;
-        else if (selectedBarangay) zoom = 13;
+        if (selectedBarangay) zoom = 13;
         else if (selectedMunicipality) zoom = 11;
         
         return { center: [avgLat, avgLng], zoom };
@@ -117,13 +93,10 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         <AddressFilterPanel
             municipalities={municipalities}
             barangays={barangays}
-            sitios={sitios}
             selectedMunicipality={selectedMunicipality}
             selectedBarangay={selectedBarangay}
-            selectedSitio={selectedSitio}
             onMunicipalityChange={handleMunicipalityChange}
             onBarangayChange={handleBarangayChange}
-            onSitioChange={handleSitioChange}
             onClearFilters={handleClearFilters}
         />
     );

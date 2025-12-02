@@ -14,7 +14,7 @@ export default function LeftSidebar({ isOpen, onClose, children, title }) {
             {/* Sidebar */}
             <div
                 className={`
-                    fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white shadow-lg z-40
+                    fixed top-16 left-0 m-4 rounded-lg h-[calc(100vh-4rem)] bg-white shadow-lg z-40
                     transition-transform duration-300 ease-in-out
                     ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
                     w-64 overflow-y-auto
