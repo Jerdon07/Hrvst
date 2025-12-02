@@ -11,7 +11,7 @@ export default function Button({ href = null, method = null, children, ...props 
             >
                 {children}
             </Link>
-        )
+        );
     }
     
     return (

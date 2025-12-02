@@ -1,5 +1,3 @@
-// Content for Left
-
 export default function CategoryFilterPanel({
     categories,
     selectedCategory,
@@ -9,45 +7,30 @@ export default function CategoryFilterPanel({
     onAddCrop
 }) {
     return (
-        <div className="space-y-2">
-            <button
-                onClick={() => onCategoryClick('')}
-                className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
-                    selectedCategory === '' 
-                        ? 'bg-green-600 text-white' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-            >
-                <div className="flex justify-between items-center">
-                    <span className="font-medium">All Crops</span>
-                    <span className="text-sm">{totalCrops}</span>
-                </div>
-            </button>
-
+        <div className="space-y-1">
             {categories.map(category => (
-                <div key={category.id}>
+                <div key={category.id} className="space-y-1">
                     <button
                         onClick={() => onCategoryClick(category.id)}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors flex justify-between items-center ${
                             selectedCategory == category.id 
-                                ? 'bg-green-600 text-white' 
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? 'bg-black text-white font-semibold' 
+                                : 'text-gray-700 hover:bg-gray-100 font-medium'
                         }`}
                     >
-                        <div className="flex justify-between items-center">
-                            <span className="font-medium">{category.name}</span>
-                            <span className="text-sm">{category.crops_count}</span>
-                        </div>
+                        <span>{category.name}</span>
+                        {isAdmin && selectedCategory == category.id && (
+                            <span
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onAddCrop(category.id);
+                                }}
+                                className="text-white hover:text-gray-200 cursor-pointer"
+                            >
+                                Add
+                            </span>
+                        )}
                     </button>
-                    
-                    {isAdmin && selectedCategory == category.id && (
-                        <button
-                            onClick={() => onAddCrop(category.id)}
-                            className="w-full mt-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
-                        >
-                            + Add Crop
-                        </button>
-                    )}
                 </div>
             ))}
         </div>
