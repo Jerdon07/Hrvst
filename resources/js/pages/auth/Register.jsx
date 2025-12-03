@@ -7,6 +7,16 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import '@/utils/leafletSetup';
 
+function RecenterMap({ lat, lng }) {
+    const map = useMapEvents({});
+    useEffect(() => {
+        if (lat && lng) {
+            map.setView([lat, lng], 15, { animate: true });
+        }
+    }, [lat, lng]);
+    return null;
+}
+
 export default function Register({ municipalities = [], crops = [] }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -27,32 +37,43 @@ export default function Register({ municipalities = [], crops = [] }) {
     
     const [locating, setLocating] = useState(false);
     const [isMapOpen, setIsMapOpen] = useState(false);
-    const [tempLat, setTempLat] = useState('');
-    const [tempLng, setTempLng] = useState('');
+    const [tempLat, setTempLat] = useState(null);
+    const [tempLng, setTempLng] = useState(null);
     const [municipalityName, setMunicipalityName] = useState('');
     const [barangayName, setBarangayName] = useState('');
 
     const handleMunicipalityChange = async (municipalityId) => {
         setData({ ...data, municipality_id: municipalityId, barangay_id: '' });
         setBarangays([]);
+        if (!municipalityId) return;
         
-        if (municipalityId) {
-            try {
-                const response = await fetch(`/api/barangays?municipality_id=${municipalityId}`);
-                const result = await response.json();
-                setBarangays(result);
-                const m = municipalities.find(m => String(m.id) === String(municipalityId));
-                setMunicipalityName(m ? m.name : '');
-            } catch (error) {
-                console.error('Error fetching barangays:', error);
+        try {
+            const response = await fetch(`/api/barangays?municipality_id=${municipalityId}`);
+            const result = await response.json();
+            setBarangays(result);
+
+            const m = municipalities.find(m => String(m.id) === String(municipalityId));
+            setMunicipalityName(m ? m.name : '');
+
+            if (m?.latitude && m?.longitude) {
+                setTempLat(m.latitude);
+                setTempLng(m.longitude);
             }
+        } catch (error) {
+            console.error('Error fetching barangays:', error);
         }
     };
 
     const handleBarangayChange = (barangayId) => {
         setData({ ...data, barangay_id: barangayId });
+
         const b = barangays.find(b => String(b.id) === String(barangayId));
         setBarangayName(b ? b.name : '');
+
+        if (b?.latitude && b?.longitude) {
+            setTempLat(b.latitude);
+            setTempLng(b.longitude);
+        }
     };
 
     const handleCropToggle = (cropId) => {
@@ -371,11 +392,17 @@ export default function Register({ municipalities = [], crops = [] }) {
                         <p className="text-sm text-gray-600">{municipalityName || 'Municipality'}, {barangayName || 'Barangay'}</p>
                     </div>
                     <div className="w-full h-72 rounded-md overflow-hidden border">
-                        <MapContainer center={[parseFloat(tempLat || '16.4'), parseFloat(tempLng || '120.6')]} zoom={13} style={{ height: '100%', width: '100%' }}>
+                        <MapContainer 
+                            center={[parseFloat(tempLat || '16.4'), parseFloat(tempLng || '120.6')]} 
+                            zoom={13} 
+                            style={{ height: '100%', width: '100%' }}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
+
+                            <RecenterMap lat={parseFloat(tempLat)} lng={parseFloat(tempLng)} />
+
                             <ClickCapture />
                             {(tempLat && tempLng) && (
                                 <Marker position={[parseFloat(tempLat), parseFloat(tempLng)]} />
