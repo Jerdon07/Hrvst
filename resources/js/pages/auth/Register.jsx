@@ -100,16 +100,6 @@ export default function Register({ municipalities = [], crops = [] }) {
         }
     };
 
-    // Crop Toggle Handler
-    const handleCropToggle = (cropId) => {
-        const currentCrops = data.crops;
-        if (currentCrops.includes(cropId)) {
-            setData('crops', currentCrops.filter(id => id !== cropId));
-        } else if (currentCrops.length < 5) {
-            setData('crops', [...currentCrops, cropId]);
-        }
-    };
-
     // Map Handlers
     const openMapModal = () => {
         if (!data.municipality_id) {
@@ -151,6 +141,16 @@ export default function Register({ municipalities = [], crops = [] }) {
         setData('latitude', String(lat));
         setData('longitude', String(lng));
         setIsMapOpen(false);
+    };
+
+    // Crop Toggle Handler
+    const handleCropToggle = (cropId) => {
+        const currentCrops = data.crops;
+        if (currentCrops.includes(cropId)) {
+            setData('crops', currentCrops.filter(id => id !== cropId));
+        } else if (currentCrops.length < 5) {
+            setData('crops', [...currentCrops, cropId]);
+        }
     };
 
     // Form Submit Handler
