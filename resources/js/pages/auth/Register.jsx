@@ -2,19 +2,27 @@ import InputError from '@/Components/InputError';
 import Modal from '@/Components/Modal';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { Eye, EyeOff, MapPin } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { Eye, EyeOff } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import '@/utils/leafletSetup';
 
-function RecenterMap({ lat, lng }) {
+function RecenterMap({ lat, lng, zoom }) {
     const map = useMap();
     useEffect(() => {
-        // Only recenter when both coordinates are valid finite numbers
-        if (Number.isFinite(lat) && Number.isFinite(lng)) {
-            map.setView([lat, lng], 14, { animate: true });
+        if (lat && lng) {
+            map.setView([lat, lng], zoom || 14, { animate: true });
         }
-    }, [lat, lng, map]);
+    }, [lat, lng, zoom, map]);
+    return null;
+}
+
+function ClickCapture({ onLocationSelect }) {
+    useMapEvents({
+        click(e) {
+            onLocationSelect(e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
+        },
+    });
     return null;
 }
 
@@ -35,30 +43,66 @@ export default function Register({ municipalities = [], crops = [] }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
     const [barangays, setBarangays] = useState([]);
-    
     const [locating, setLocating] = useState(false);
     const [isMapOpen, setIsMapOpen] = useState(false);
-    const [tempLat, setTempLat] = useState(null);
-    const [tempLng, setTempLng] = useState(null);
+    const [tempLat, setTempLat] = useState('16.4');
+    const [tempLng, setTempLng] = useState('120.6');
+    const [mapZoom, setMapZoom] = useState(10);
     const [municipalityName, setMunicipalityName] = useState('');
     const [barangayName, setBarangayName] = useState('');
+    const [showPendingModal, setShowPendingModal] = useState(false);
+
+    // Approximate coordinates for Benguet municipalities
+    const municipalityCoordinates = {
+        '1': { lat: 16.4120, lng: 120.5960, name: 'Baguio City' },
+        '2': { lat: 16.4565, lng: 120.5897, name: 'La Trinidad' },
+        '3': { lat: 16.3719, lng: 120.6869, name: 'Itogon' },
+        '4': { lat: 16.4823, lng: 120.5432, name: 'Sablan' },
+        '5': { lat: 16.3108, lng: 120.5869, name: 'Tuba' },
+        '6': { lat: 16.5300, lng: 120.6200, name: 'Tublay' },
+        '7': { lat: 16.5800, lng: 120.6900, name: 'Atok' },
+        '8': { lat: 16.7800, lng: 120.6700, name: 'Bakun' },
+        '9': { lat: 16.5200, lng: 120.8300, name: 'Bokod' },
+        '10': { lat: 16.6700, lng: 120.8400, name: 'Buguias' },
+        '11': { lat: 16.4700, lng: 120.8600, name: 'Kabayan' },
+        '12': { lat: 16.5500, lng: 120.5900, name: 'Kapangan' },
+        '13': { lat: 16.6900, lng: 120.6500, name: 'Kibungan' },
+        '14': { lat: 16.8700, lng: 120.7800, name: 'Mankayan' },
+    };
 
     const handleMunicipalityChange = async (municipalityId) => {
         setData({ ...data, municipality_id: municipalityId, barangay_id: '' });
         setBarangays([]);
-        if (!municipalityId) return;
+        
+        if (!municipalityId) {
+            setMunicipalityName('');
+            setTempLat('16.4');
+            setTempLng('120.6');
+            setMapZoom(10);
+            return;
+        }
         
         try {
             const response = await fetch(`/api/barangays?municipality_id=${municipalityId}`);
             const result = await response.json();
             setBarangays(result);
 
-            const m = municipalities.find(m => String(m.id) === String(municipalityId));
-            setMunicipalityName(m ? m.name : '');
-
-            if (m?.latitude && m?.longitude) {
-                setTempLat(m.latitude);
-                setTempLng(m.longitude);
+            // Get municipality coordinates from backend if available, otherwise use hardcoded
+            const municipality = municipalities.find(m => String(m.id) === String(municipalityId));
+            const coords = municipalityCoordinates[municipalityId];
+            
+            if (municipality) {
+                setMunicipalityName(municipality.name);
+                
+                // Use backend coordinates if available, otherwise use hardcoded
+                if (municipality.latitude && municipality.longitude) {
+                    setTempLat(String(municipality.latitude));
+                    setTempLng(String(municipality.longitude));
+                } else if (coords) {
+                    setTempLat(String(coords.lat));
+                    setTempLng(String(coords.lng));
+                }
+                setMapZoom(12); // Zoom to municipality level
             }
         } catch (error) {
             console.error('Error fetching barangays:', error);
@@ -68,8 +112,17 @@ export default function Register({ municipalities = [], crops = [] }) {
     const handleBarangayChange = (barangayId) => {
         setData({ ...data, barangay_id: barangayId });
 
-        const b = barangays.find(b => String(b.id) === String(barangayId));
-        setBarangayName(b ? b.name : '');
+        const barangay = barangays.find(b => String(b.id) === String(barangayId));
+        if (barangay) {
+            setBarangayName(barangay.name);
+            
+            // If barangay has coordinates, zoom to it
+            if (barangay.latitude && barangay.longitude) {
+                setTempLat(String(barangay.latitude));
+                setTempLng(String(barangay.longitude));
+                setMapZoom(14); // Zoom closer for barangay
+            }
+        }
     };
 
     const handleCropToggle = (cropId) => {
@@ -81,55 +134,63 @@ export default function Register({ municipalities = [], crops = [] }) {
         }
     };
 
-    const submit = (e) => {
-        e.preventDefault();
-
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+    const openMapModal = () => {
+        if (!data.municipality_id) {
+            alert('Please select a municipality first');
+            return;
+        }
+        
+        // Use existing coordinates or default
+        setTempLat(data.latitude || tempLat);
+        setTempLng(data.longitude || tempLng);
+        setIsMapOpen(true);
     };
 
-    const openMapModal = () => {
-        // Prefer explicit user-selected coordinates, then temp values, then municipality coords, then defaults
-        let lat = data.latitude || null;
-        let lng = data.longitude || null;
-
-        if (!lat || !lng) {
-            if (tempLat && tempLng) {
-                lat = tempLat;
-                lng = tempLng;
-            } else if (data.municipality_id) {
-                const m = municipalities.find((mm) => String(mm.id) === String(data.municipality_id));
-                lat = m?.latitude ?? '16.4';
-                lng = m?.longitude ?? '120.6';
-            } else {
-                lat = '16.4';
-                lng = '120.6';
-            }
-        }
-
-        setTempLat(String(lat));
-        setTempLng(String(lng));
-        setIsMapOpen(true);
+    const handleMapClick = (lat, lng) => {
+        setTempLat(lat);
+        setTempLng(lng);
     };
 
     const confirmLocation = () => {
         if (tempLat && tempLng) {
+            // Validate if within Benguet boundaries (approximate)
+            const lat = parseFloat(tempLat);
+            const lng = parseFloat(tempLng);
+            
+            const withinBenguet = (lat >= 16.0 && lat <= 16.9) && (lng >= 120.3 && lng <= 120.9);
+            
+            if (!withinBenguet) {
+                if (!confirm('Warning: This location appears to be outside Benguet Province. Continue anyway?')) {
+                    return;
+                }
+            }
+            
             setData('latitude', String(tempLat));
             setData('longitude', String(tempLng));
         }
         setIsMapOpen(false);
     };
 
-    function ClickCapture() {
-        useMapEvents({
-            click(e) {
-                setTempLat(e.latlng.lat.toFixed(6));
-                setTempLng(e.latlng.lng.toFixed(6));
+    const submit = (e) => {
+        e.preventDefault();
+
+        if (!data.latitude || !data.longitude) {
+            alert('Please set your farm location on the map');
+            return;
+        }
+
+        post(route('register'), {
+            onSuccess: () => {
+                setShowPendingModal(true);
             },
+            onFinish: () => reset('password', 'password_confirmation'),
         });
-        return null;
-    }
+    };
+
+    const handlePendingModalClose = () => {
+        setShowPendingModal(false);
+        window.location.href = '/';
+    };
 
     return (
         <>
@@ -140,7 +201,9 @@ export default function Register({ municipalities = [], crops = [] }) {
                 <div className="hidden lg:flex lg:w-1/2 bg-black items-center justify-center p-12">
                     <div className="max-w-md text-center">
                         <div className="flex justify-center mb-8">
-                            <img src="/logo.png" alt="Hrvst Logo" className="w-24 h-24" />
+                            <svg className="w-24 h-24 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                            </svg>
                         </div>
                         <h1 className="text-5xl font-bold text-white mb-6">
                             Create your free account
@@ -310,8 +373,6 @@ export default function Register({ municipalities = [], crops = [] }) {
                                     </select>
                                     <InputError message={errors.barangay_id} className="mt-2" />
                                 </div>
-
-                                
                             </div>
 
                             {/* Geolocation Section */}
@@ -320,14 +381,14 @@ export default function Register({ municipalities = [], crops = [] }) {
                                 <button
                                     type="button"
                                     onClick={openMapModal}
-                                    disabled={locating}
+                                    disabled={!data.municipality_id}
                                     className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {locating ? 'Locating...' : 'Locate your Address'}
+                                    Locate your Address
                                 </button>
                                 {data.latitude && data.longitude && (
-                                    <p className="text-xs text-gray-500 text-center">
-                                        Location: {parseFloat(data.latitude).toFixed(6)}, {parseFloat(data.longitude).toFixed(6)}
+                                    <p className="text-xs text-green-600 text-center font-medium">
+                                        ✓ Location set successfully
                                     </p>
                                 )}
                                 <InputError message={errors.latitude || errors.longitude} className="mt-2" />
@@ -372,61 +433,85 @@ export default function Register({ municipalities = [], crops = [] }) {
                             >
                                 {processing ? 'Creating Account...' : 'Create Account'}
                             </button>
-
-                            {/* Terms and Privacy */}
-                            {/* <div className="flex items-start gap-2 pt-4">
-                                <input
-                                    type="checkbox"
-                                    id="terms"
-                                    required
-                                    className="mt-1 rounded border-gray-300"
-                                />
-
-                                
-                                <label htmlFor="terms" className="text-sm text-gray-600">
-                                    I've read and agree with the{' '}
-                                    <a href="#" className="text-gray-900 font-medium hover:underline">
-                                        Terms and Conditions
-                                    </a>
-                                    {' '}and the{' '}
-                                    <a href="#" className="text-gray-900 font-medium hover:underline">
-                                        Privacy Policy
-                                    </a>
-                                    .
-                                </label>
-                            </div> */}
                         </form>
                     </div>
                 </div>
             </div>
+
+            {/* Map Modal */}
             <Modal show={isMapOpen} onClose={() => setIsMapOpen(false)} maxWidth="2xl">
                 <div className="bg-white rounded-lg p-6">
                     <div className="text-center mb-4">
                         <h3 className="text-lg font-semibold">Locate your Farm!</h3>
-                        <p className="text-sm text-gray-600">{municipalityName || 'Municipality'}, {barangayName || 'Barangay'}</p>
+                        <p className="text-sm text-gray-600">
+                            {municipalityName || 'Municipality'}{barangayName ? `, ${barangayName}` : ''}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">Click on the map to set your exact farm location</p>
                     </div>
-                    <div className="w-full h-72 rounded-md overflow-hidden border">
+                    <div className="w-full h-96 rounded-md overflow-hidden border">
                         <MapContainer 
-                            center={[parseFloat(tempLat || '16.4'), parseFloat(tempLng || '120.6')]} 
-                            zoom={13} 
-                            style={{ height: '100%', width: '100%' }}>
+                            center={[parseFloat(tempLat), parseFloat(tempLng)]} 
+                            zoom={mapZoom} 
+                            style={{ height: '100%', width: '100%' }}
+                            scrollWheelZoom={true}
+                        >
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-
-                            <RecenterMap lat={parseFloat(tempLat)} lng={parseFloat(tempLng)} />
-                            <ClickCapture />
+                            <RecenterMap lat={parseFloat(tempLat)} lng={parseFloat(tempLng)} zoom={mapZoom} />
+                            <ClickCapture onLocationSelect={handleMapClick} />
                             {(tempLat && tempLng) && (
                                 <Marker position={[parseFloat(tempLat), parseFloat(tempLng)]} />
                             )}
                         </MapContainer>
                     </div>
-                    <div className="mt-4">
-                        <button onClick={confirmLocation} className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">Confirm</button>
+                    {tempLat && tempLng && (
+                        <p className="text-xs text-gray-500 text-center mt-2">
+                            Selected: {parseFloat(tempLat).toFixed(6)}, {parseFloat(tempLng).toFixed(6)}
+                        </p>
+                    )}
+                    <div className="mt-4 flex gap-2">
+                        <button 
+                            onClick={() => setIsMapOpen(false)} 
+                            className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={confirmLocation} 
+                            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700"
+                        >
+                            Confirm Location
+                        </button>
                     </div>
                 </div>
             </Modal>
+
+            {/* Pending Account Modal */}
+            {showPendingModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[99999]">
+                    <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
+                        <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                            Account Pending Approval
+                        </h2>
+                        <p className="text-gray-600 mb-6">
+                            Your farmer account has been submitted and is awaiting administrator approval.
+                        </p>
+                        <button
+                            onClick={handlePendingModalClose}
+                            className="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
