@@ -68,7 +68,7 @@ export default function Register({ municipalities = [], crops = [] }) {
         
         try {
             // Fetch barangays
-            const response = await fetch(`/public-api/barangays?municipality_id=${municipalityId}`);
+            const response = await fetch(`/api/barangays?municipality_id=${municipalityId}`);
             const result = await response.json();
             setBarangays(result);
 
