@@ -9,7 +9,7 @@ export default function FarmerMarker({ farmer, onViewDetails, registerMarker }) 
                 click: () => onViewDetails(farmer.id)
             }}
         >
-            <Popup>
+            <Popup autoClose={false} closeOnClick={false}>
                 <div className="text-center min-w-[150px]">
                     <strong className="text-base">{farmer.user.name}</strong>
                     <div className="flex gap-1 mt-2 justify-center flex-wrap">
