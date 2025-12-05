@@ -11,6 +11,7 @@ import FarmerDetailModal from '@/Components/Modals/FarmerDetailModal';
 
 export default function Index({ farmers, municipalities, barangays: initialBarangays, filters }) {
     const { auth, pendingFarmers } = usePage().props;
+    // Detects if the User is the Admin or Approved Farmer
     const isAdmin = auth.user?.isAdmin;
     const isApprovedFarmer = auth.user && !auth.user.isAdmin && auth.user.isApproved;
 
@@ -28,6 +29,9 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         markersRef.current = [];
     }, [farmers]);
 
+    // --------------------------------------------------------
+    // Municipality
+    // --------------------------------------------------------
     const handleMunicipalityChange = (municipalityId) => {
         setSelectedMunicipality(municipalityId);
         setSelectedBarangay('');
@@ -41,6 +45,9 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         });
     };
 
+    // --------------------------------------------------------
+    // Barangay
+    // --------------------------------------------------------
     const handleBarangayChange = (barangayId) => {
         setSelectedBarangay(barangayId);
         
@@ -54,16 +61,11 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         });
     };
 
-    const handleClearFilters = () => {
-        setSelectedMunicipality('');
-        setSelectedBarangay('');
-        
-        router.get(route('farmers.index'), {}, {
-            preserveState: false,
-            replace: true,
-        });
-    };
+    // --------------------------------------------------------
+    // Leaflet Map
+    // --------------------------------------------------------
 
+    /* Searches for the Average Center Coordinate of Farmers */
     const getMapCenterAndZoom = () => {
         if (farmers.length === 0) {
             return { center: [16.4, 120.6], zoom: 10 };
@@ -72,15 +74,14 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
         const avgLat = farmers.reduce((sum, f) => sum + parseFloat(f.latitude), 0) / farmers.length;
         const avgLng = farmers.reduce((sum, f) => sum + parseFloat(f.longitude), 0) / farmers.length;
         
-        let zoom = 10;
-        if (selectedBarangay) zoom = 13;
-        else if (selectedMunicipality) zoom = 11;
+        let zoom = 11;
         
         return { center: [avgLat, avgLng], zoom };
     };
-
+    /* Object Destructuring the Map Center and Zoom */
     const { center, zoom } = getMapCenterAndZoom();
 
+    /* Fetches Farmer Data */
     const handleViewDetails = async (farmerId) => {
         try {
             const response = await fetch(route('api.farmers.show', farmerId));
@@ -117,27 +118,31 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
             selectedBarangay={selectedBarangay}
             onMunicipalityChange={handleMunicipalityChange}
             onBarangayChange={handleBarangayChange}
-            onClearFilters={handleClearFilters}
         />
     );
 
     // Right sidebar content
-    const rightSidebarContent = isAdmin ? (
-        <AdminPendingPanel />
-    ) : isApprovedFarmer ? (
-        <FarmerProfilePanel />
-    ) : null;
+    const rightSidebarContent = isAdmin ? (     // If User is Admin:
+        <AdminPendingPanel />                       // Use this Admin Panel
+    ) : isApprovedFarmer ? (                    // If User is Approved Farmer:
+        <FarmerProfilePanel />                      // Use this Farmer Panel
+    ) : null;                                   // Else none
 
-    // Map content
+    // --------------------------------------------------------
+    // Map Content
+    // --------------------------------------------------------
     const mapContent = (
+        /* Sets the Foundation for Displaying Map */
         <BaseMap center={center} zoom={zoom}>
+            {/* Reactive Map for External user Actions(Selecting Address) */}
             <MapUpdater center={center} zoom={zoom} />
+            {/* Farmer Markers connects to the BaseMap */}
             {farmers.map(farmer => (
                 <FarmerMarker
                     key={farmer.id}
                     farmer={farmer}
-                    onViewDetails={handleViewDetails}
-                    registerMarker={registerMarker}
+                    onViewDetails={handleViewDetails}       // Fetches Farmer Data then Opens Modal
+                    registerMarker={registerMarker}         // Registers marker for Farmers
                 />
             ))}
         </BaseMap>
@@ -145,29 +150,21 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
 
     return (
         <MapCentricLayout
-            title="Farmers"
-            leftSidebar={leftSidebar}
-            leftSidebarTitle="Address"
-            rightSidebarContent={rightSidebarContent}
-            rightSidebarBadge={pendingFarmers?.length || 0}
-            showMap={true}
-            mapContent={mapContent}
+            title="Farmers"                                 // Page Title
+            leftSidebar={leftSidebar}                       // Sidebar Content
+            leftSidebarTitle="Address"                      // Left Sidebar Header
+            rightSidebarContent={rightSidebarContent}       // Sidebar exclusive for Admin & Approved Farmer
+            rightSidebarBadge={pendingFarmers?.length || 0} // Shows Number Badge for Pending Farmers
+            showMap={true}                                  // Adds the Map Background
+            mapContent={mapContent}                         // Gives Map Content
         >
-            {/* Overlay message if no farmers */}
-            {farmers.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="bg-white px-6 py-4 rounded-lg shadow-lg">
-                        <p className="text-gray-600 text-lg">No farmers found in this area.</p>
-                    </div>
-                </div>
-            )}
 
             {/* Farmer Detail Modal */}
             <FarmerDetailModal
-                isOpen={isDetailModalOpen}
+                isOpen={isDetailModalOpen}                  // If the Function Ran, Display the Modal
                 onClose={() => {
-                    setIsDetailModalOpen(false);
-                    setSelectedFarmer(null);
+                    setIsDetailModalOpen(false);            // Set False to Exit the Modal
+                    setSelectedFarmer(null);                // If there's Farmer, Display their Info
                 }}
                 farmer={selectedFarmer}
             />

@@ -2,6 +2,7 @@ import { Marker, Popup } from 'react-leaflet';
 
 export default function FarmerMarker({ farmer, onViewDetails, registerMarker }) {
     return (
+        /* The Marker itself */
         <Marker
             ref={registerMarker}
             position={[parseFloat(farmer.latitude), parseFloat(farmer.longitude)]}
@@ -9,9 +10,14 @@ export default function FarmerMarker({ farmer, onViewDetails, registerMarker }) 
                 click: () => onViewDetails(farmer.id)
             }}
         >
+            {/* Popup Short Information of the Marker */}
             <Popup autoClose={false} closeOnClick={false}>
                 <div className="text-center min-w-[150px]">
+
+                    {/* Farmer Name */}
                     <strong className="text-base">{farmer.user.name}</strong>
+
+                    {/* Farmer Crops Planted */}
                     <div className="flex gap-1 mt-2 justify-center flex-wrap">
                         {farmer.crops.slice(0, 3).map(crop => (
                             <div 
@@ -23,6 +29,8 @@ export default function FarmerMarker({ farmer, onViewDetails, registerMarker }) 
                             </div>
                         ))}
                     </div>
+
+                    {/* Button */}
                     <button
                         onClick={(e) => {
                             e.preventDefault();
