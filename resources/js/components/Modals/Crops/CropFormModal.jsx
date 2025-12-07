@@ -1,6 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import BaseModal from '@/Components/Modals/Base/BaseModal';
+import Button from '@/Components/Buttons/Button';
 
 export default function CropFormModal({ isOpen, onClose, crop }) {
     const isEditing = !!(crop && crop.id); // treat object-without-id as create-preload
@@ -148,7 +149,7 @@ export default function CropFormModal({ isOpen, onClose, crop }) {
                     <Button variant="secondary" fullWidth onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button variant="primary" fullWidth onClick={onConfirm} disabled={processing}>
+                    <Button variant="primary" fullWidth disabled={processing}>
                         {processing ? 'Saving...' : 'Confirm'}
                     </Button>
                 </div>
