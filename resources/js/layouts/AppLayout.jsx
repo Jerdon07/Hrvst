@@ -1,87 +1,78 @@
 import { useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import Navigation from '@/Components/Navigation/Navigation';
+import LeftSidebar from '@/Components/Sidebars/LeftSidebar';
+import RightSidebar from '@/Components/Sidebars/RightSidebar';
 
-export default function AppLayout({ children, rightSidebar = null }) {
-    const { auth } = usePage().props;
-    const user = auth?.user;
+export default function AppLayout({ 
+    children, 
+    title,
+    leftSidebar = null,
+    leftSidebarTitle = '',
+    rightSidebarContent = null,
+    rightSidebarBadge = 0,
+    showMap = true,
+    mapContent = null
+}) {
+    const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
+    const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+
+    const toggleLeftSidebar = () => {
+        setIsLeftSidebarOpen(!isLeftSidebarOpen);
+    };
+
+    const toggleRightSidebar = () => {
+        setIsRightSidebarOpen(!isRightSidebarOpen);
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Navigation Bar */}
-            <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        {/* Left - Logo */}
-                        <Link href="/" className="flex items-center space-x-2">
-                            <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-                            </svg>
-                            <span className="text-2xl font-bold text-gray-800">Hrvst</span>
-                        </Link>
+        <>
+            <Head title={title} />
+            
+            {/* Navigation */}
+            <Navigation onMobileMenuToggle={toggleLeftSidebar} />
 
-                        {/* Center - Navigation Links */}
-                        <div className="flex space-x-8">
-                            <Link
-                                href={route('farmers.index')}
-                                className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                            >
-                                Farmers
-                            </Link>
-                            <Link
-                                href={route('crops.index')}
-                                className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-                            >
-                                Crops
-                            </Link>
-                        </div>
-
-                        {/* Right - Auth Buttons */}
-                        <div className="flex items-center space-x-4">
-                            {user ? (
-                                <>
-                                    <span className="text-sm text-gray-600">
-                                        {user.name}
-                                    </span>
-                                    <Link
-                                        href={route('logout')}
-                                        method="post"
-                                        as="button"
-                                        className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
-                                    >
-                                        Sign out
-                                    </Link>
-                                </>
-                            ) : (
-                                <>
-                                    <Link
-                                        href={route('login')}
-                                        className="px-4 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors"
-                                    >
-                                        Log in
-                                    </Link>
-                                    <Link
-                                        href={route('register')}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                                    >
-                                        Sign up
-                                    </Link>
-                                </>
-                            )}
-                        </div>
+            {/* Main Layout */}
+            <div className="pt-16 min-h-screen">
+                {/* Map Background (if enabled) */}
+                {showMap && (
+                    <div className="fixed inset-0 top-16 z-0">
+                        {mapContent}
                     </div>
-                </div>
-            </nav>
+                )}
 
-            {/* Main Content Area */}
-            <div className="flex">
-                {/* Main Content */}
-                <main className="flex-1">
+                {/* Content Background (if no map) */}
+                {!showMap && (
+                    <div className="fixed inset-0 top-16 z-0 bg-white" />
+                )}
+
+                {/* Left Sidebar */}
+                {leftSidebar && (
+                    <LeftSidebar
+                        isOpen={isLeftSidebarOpen}
+                        onClose={() => setIsLeftSidebarOpen(false)}
+                        title={leftSidebarTitle}
+                    >
+                        {leftSidebar}
+                    </LeftSidebar>
+                )}
+
+                {/* Main Content Area */}
+                <div className={`relative ${leftSidebar ? 'md:ml-64' : ''}`}>
                     {children}
-                </main>
+                </div>
 
-                {/* Right Sidebar (conditionally rendered) */}
-                {rightSidebar}
+                {/* Right Sidebar */}
+                {rightSidebarContent && (
+                    <RightSidebar
+                        isOpen={isRightSidebarOpen}
+                        onToggle={toggleRightSidebar}
+                        badge={rightSidebarBadge}
+                    >
+                        {rightSidebarContent}
+                    </RightSidebar>
+                )}
             </div>
-        </div>
+        </>
     );
 }

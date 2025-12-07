@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
-import MapCentricLayout from '@/Layouts/MapCentricLayout';
+import AppLayout from '@/Layouts/AppLayout';
 import CategoryFilterPanel from '@/Components/Sidebars/CategoryFilterPanel';
 import FarmerProfilePanel from '@/Components/Sidebars/FarmerProfilePanel';
 import AdminPendingPanel from '@/Components/Sidebars/AdminPendingPanel';
@@ -58,7 +58,7 @@ export default function Index({ crops, categories, filters }) {
         }
     };
 
-    // Left sidebar content
+    // Left Sidebar with Crop Categories
     const leftSidebar = (
         <div className="space-y-6">
             {/* Search Bar */}
@@ -103,10 +103,10 @@ export default function Index({ crops, categories, filters }) {
     ) : null;
 
     return (
-        <MapCentricLayout
-            title="Crops"
+        <AppLayout
+            title="Crops Page"
             leftSidebar={leftSidebar}
-            leftSidebarTitle="Crops"
+            leftSidebarTitle=""
             rightSidebarContent={rightSidebarContent}
             rightSidebarBadge={pendingFarmers?.length || 0}
             showMap={false}
@@ -184,6 +184,6 @@ export default function Index({ crops, categories, filters }) {
                 crop={(isCreateModalOpen || isEditModalOpen) ? editingCrop : null}
                 categories={categories}
             />
-        </MapCentricLayout>
+        </AppLayout>
     );
 }

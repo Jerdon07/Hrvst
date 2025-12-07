@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { router, usePage } from '@inertiajs/react';
-import MapCentricLayout from '@/Layouts/MapCentricLayout';
+import AppLayout from '@/Layouts/AppLayout';
 import BaseMap from '@/Components/Map/BaseMap';
 import FarmerMarker from '@/Components/Map/FarmerMarker';
 import MapUpdater from '@/Components/Map/MapUpdater';
@@ -149,7 +149,7 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
     );
 
     return (
-        <MapCentricLayout
+        <AppLayout
             title="Farmers"                                 // Page Title
             leftSidebar={leftSidebar}                       // Sidebar Content
             leftSidebarTitle="Address"                      // Left Sidebar Header
@@ -168,6 +168,6 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
                 }}
                 farmer={selectedFarmer}
             />
-        </MapCentricLayout>
+        </AppLayout>
     );
 }
