@@ -24,14 +24,11 @@ export default function Index({
     // Left Sidebar Contents
     const [selectedMunicipality, setSelectedMunicipality] = useState(filters.municipality_id || '');
     const [selectedBarangay, setSelectedBarangay] = useState(filters.barangay_id || '');
-    const [barangays, setBarangays] = useState(initialBarangays || []);
 
     const [selectedFarmer, setSelectedFarmer] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-    useEffect(() => {
-        setBarangays(initialBarangays || []);
-    }, [initialBarangays]);
+    const barangays = initialBarangays;
 
     useEffect(() => {
         markersRef.current = [];
