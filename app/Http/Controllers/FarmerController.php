@@ -38,6 +38,7 @@ class FarmerController extends Controller
             ->get();
         }
 
+        // Data passed to Farmers Page as properties
         return Inertia::render('Farmers/Index', [
             'farmers' => $farmers,
             'municipalities' => $municipalities,
