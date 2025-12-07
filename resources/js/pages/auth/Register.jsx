@@ -4,8 +4,8 @@ import PersonalInfoFields from '@/Components/Registration/PersonalInfoFields';
 import LocationFields from '@/Components/Registration/LocationFields';
 import GeolocationBtn from '@/Components/Buttons/GeolocationBtn';
 import CropSelection from '@/Components/Registration/CropSelection';
-import MapModal from '@/Components/Modals/MapModal';
-import PendingModal from '@/Components/Modals/PendingModal';
+import MapModal from '@/Components/Modals/Maps/MapModal';
+import PendingModal from '@/Components/Modals/Alerts/PendingModal';
 
 // Municipality coordinates for Benguet Province
 const MUNICIPALITY_COORDS = {
