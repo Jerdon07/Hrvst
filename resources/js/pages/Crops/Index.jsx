@@ -14,11 +14,9 @@ export default function Index({
 }) {
     const { auth, pendingFarmers } = usePage().props;
 
-    // Checks if the user is Admin or Approved Farmer
     const isAdmin = auth.user?.isAdmin;
     const isApprovedFarmer = auth.user && !auth.user.isAdmin && auth.user.isApproved;
 
-    // Left Sidebar Contents
     const [selectedCategory, setSelectedCategory] = useState(filters.category_id || '');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -26,7 +24,7 @@ export default function Index({
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingCrop, setEditingCrop] = useState(null);
 
-    // Filter crops by category and search
+    // Filter crops
     const displayedCrops = crops.filter(crop => {
         const matchesCategory = selectedCategory ? crop.category_id == selectedCategory : true;
         const matchesSearch = crop.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -42,7 +40,6 @@ export default function Index({
         );
     };
 
-    // FIXED — Create mode must NOT pass a fake crop object
     const openCreateModal = (categoryId) => {
         setEditingCrop({ category_id: categoryId });
         setIsCreateModalOpen(true);
@@ -65,44 +62,20 @@ export default function Index({
         }
     };
 
-    // Left Sidebar with Crop Categories
+    // Left sidebar
     const leftSidebar = (
-        <div className="space-y-6">
-            {/* Search Bar */}
-            <div className="relative">
-                <input
-                    type="text"
-                    placeholder="Search Vegetables"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-                <svg 
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </div>
-
-            {/* Categories */}
-            <div>
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Categories</h3>
-                <CategoryFilterPanel
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    onCategoryClick={handleCategoryClick}
-                    totalCrops={crops.length}
-                    isAdmin={isAdmin}
-                    onAddCrop={openCreateModal}
-                />
-            </div>
-        </div>
+        <CategoryFilterPanel
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryClick={handleCategoryClick}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            isAdmin={isAdmin}
+            onAddCrop={openCreateModal}
+        />
     );
 
-    // Right sidebar content
+    // Right sidebar
     const rightSidebarContent = isAdmin ? (
         <AdminPendingPanel />
     ) : isApprovedFarmer ? (
@@ -118,7 +91,7 @@ export default function Index({
             rightSidebarBadge={pendingFarmers?.length || 0}
             showMap={false}
         >
-            <div className="min-h-screen p-6 bg-white">
+            <div className="min-h-screen p-6 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
                     <CropGrid
                         crops={displayedCrops}
@@ -129,7 +102,6 @@ export default function Index({
                 </div>
             </div>
 
-            {/* FIXED — Single Modal Only */}
             <CropFormModal
                 isOpen={isCreateModalOpen || isEditModalOpen}
                 onClose={closeModals}
