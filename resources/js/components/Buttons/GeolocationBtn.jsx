@@ -3,7 +3,6 @@ import InputError from '@/Components/InputError';
 export default function GeolocationBtn({ 
     hasLocation, 
     onOpenMap, 
-    disabled,
     errors 
 }) {
     return (
@@ -12,7 +11,6 @@ export default function GeolocationBtn({
             <button
                 type="button"
                 onClick={onOpenMap}
-                disabled={disabled}
                 className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {hasLocation ? 'Update Location' : 'Locate your Address'}
@@ -20,11 +18,6 @@ export default function GeolocationBtn({
             {hasLocation && (
                 <p className="text-xs text-green-600 text-center font-medium">
                     ✓ Location set successfully
-                </p>
-            )}
-            {!disabled && !hasLocation && (
-                <p className="text-xs text-gray-500 text-center">
-                    Please select municipality and barangay first
                 </p>
             )}
             <InputError message={errors.latitude || errors.longitude} className="mt-2" />
