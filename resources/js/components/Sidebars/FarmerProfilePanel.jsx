@@ -76,7 +76,7 @@ export default function FarmerProfilePanel() {
                     <label className="block text-sm font-medium text-white mb-2">Location</label>
                     <input
                         type="text"
-                        value={`${farmer.sitio.name}, ${farmer.barangay.name}, ${farmer.municipality.name}`}
+                        value={`${farmer.barangay.name}, ${farmer.municipality.name}`}
                         disabled
                         className="w-full px-3 py-2 bg-green-700 text-white rounded-md cursor-not-allowed opacity-75"
                     />
