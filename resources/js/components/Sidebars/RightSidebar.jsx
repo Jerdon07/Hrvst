@@ -1,6 +1,6 @@
 // Generic Container
 
-export default function RightSidebar({ isOpen, onToggle, children, badge }) {
+export default function RightSidebar({ isOpen, onToggle, children, badge, title }) {
     return (
         <>
             {/* Collapsed Strip - Always Visible */}
@@ -28,15 +28,18 @@ export default function RightSidebar({ isOpen, onToggle, children, badge }) {
                             )}
                         </>
                     ) : (
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        <div className="flex">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                            <h2 className="hidden md:block text-xl font-bold text-gray-800 mb-6">{title}</h2>
+                        </div>
                     )}
                 </button>
 
                 {/* Expanded Content */}
                 {isOpen && (
-                    <div className="pt-16 px-4 pb-4">
+                    <div className="pt-16 px-4 pb-4 overflow-y-auto h-full">
                         {children}
                     </div>
                 )}

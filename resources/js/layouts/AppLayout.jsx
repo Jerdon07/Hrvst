@@ -11,6 +11,7 @@ export default function AppLayout({
     leftSidebarTitle = '',
     rightSidebarContent = null,
     rightSidebarBadge = 0,
+    rightSidebarTitle = '',
     showMap = true,
     mapContent = null
 }) {
@@ -76,6 +77,7 @@ export default function AppLayout({
                             isOpen={isRightSidebarOpen}
                             onToggle={toggleRightSidebar}
                             badge={rightSidebarBadge}
+                            title={rightSidebarTitle}
                         >
                             {rightSidebarContent}
                         </RightSidebar>

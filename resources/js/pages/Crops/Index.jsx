@@ -82,11 +82,14 @@ export default function Index({
         <FarmerProfilePanel />
     ) : null;
 
+    const rightSidebarTitle = isAdmin ? "Pending Accounts" : isApprovedFarmer ? "Your Profile" : null;
+
     return (
         <AppLayout
             title="Crops Page"
             leftSidebar={leftSidebar}
             leftSidebarTitle=""
+            rightSidebarTitle={rightSidebarTitle}
             rightSidebarContent={rightSidebarContent}
             rightSidebarBadge={pendingFarmers?.length || 0}
             showMap={false}
