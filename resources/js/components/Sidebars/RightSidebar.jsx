@@ -6,21 +6,16 @@ export default function RightSidebar({ isOpen, onToggle, children, badge }) {
             {/* Collapsed Strip - Always Visible */}
             <div
                 className={`
-                    fixed right-0 top-16 h-[calc(100vh-4rem)] bg-green-600 
-                    transition-all duration-300 ease-in-out z-50 shadow-lg
-                    ${isOpen ? 'w-80 md:w-96' : 'w-12'}
+                    absolute right-0 top-0 h-full bg-white border-l transition-all duration-300 ease-in-out z-50
+                    ${isOpen ? 'w-72' : 'w-16'}
                 `}
             >
                 {/* Toggle Button */}
                 <button
                     onClick={onToggle}
-                    className="absolute left-2 top-4 text-white hover:text-green-100 transition-colors"
+                    className="absolute left-2 top-4 text-black hover:text-green-950 transition-colors"
                 >
-                    {isOpen ? (
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    ) : (
+                    {!isOpen ? (
                         <>
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -31,19 +26,20 @@ export default function RightSidebar({ isOpen, onToggle, children, badge }) {
                                 </span>
                             )}
                         </>
+                    ) : (
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                     )}
                 </button>
 
                 {/* Expanded Content */}
                 {isOpen && (
-                    <div className="pt-16 px-4 pb-4 overflow-y-auto h-full">
+                    <div className="pt-16 px-4 pb-4">
                         {children}
                     </div>
                 )}
             </div>
-
-            {/* Spacer to prevent content overlap */}
-            <div className={`transition-all duration-300 ${isOpen ? 'w-80 md:w-96' : 'w-12'}`} />
         </>
     );
 }
