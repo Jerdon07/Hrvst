@@ -10,6 +10,7 @@ export default function BaseMap({ center, zoom, children, className = '' }) {
             center={center}
             zoom={zoom}
             style={{ height: '100%', width: '100%' }}
+            zoomControl={false}
             className={className}
             key={`${center[0]}-${center[1]}-${zoom}`}
         >   {/* Fetches & Displays the actual Map Imagery */}
