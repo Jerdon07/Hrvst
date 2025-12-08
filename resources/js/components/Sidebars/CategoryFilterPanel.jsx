@@ -8,7 +8,7 @@ export default function CategoryFilterPanel({
     onAddCrop
 }) {
     return (
-        <div className="space-y-6 w-64">
+        <div className="flex flex-col space-y-6 w-64">
             {/* Search Bar */}
             <div className="relative">
                 <input
@@ -29,7 +29,7 @@ export default function CategoryFilterPanel({
             </div>
 
             {/* Categories */}
-            <div>
+            <div className="flex flex-col overflow-y-auto">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">Categories</h3>
                 <div className="space-y-1">
                     {categories.map(category => (
