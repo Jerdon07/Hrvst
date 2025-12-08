@@ -118,7 +118,7 @@ export default function Index({
             rightSidebarBadge={pendingFarmers?.length || 0}
             showMap={false}
         >
-            <div className="min-h-screen p-6 bg-gray-50">
+            <div className="min-h-screen p-6 bg-white">
                 <div className="max-w-7xl mx-auto">
                     <CropGrid
                         crops={displayedCrops}
