@@ -79,7 +79,9 @@ export default {
                 },
             },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Geist Variable', 'sans-serif'],
+                mono: ['Geist Mono Variable', 'monospace'],
+                
             },
             borderRadius: {
                 lg: "var(--radius)",
