@@ -31,6 +31,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
     
+    // Shader Data through all 
     $sharedData = [
         ...parent::share($request),
         'auth' => [
