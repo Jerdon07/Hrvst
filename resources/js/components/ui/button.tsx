@@ -9,21 +9,29 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        /* Black */
         default: `
           bg-dark text-dark-foreground 
           hover:bg-dark/90
+          transition duration-300 ease-in-out
         `,
+        /* Green */
         primary: `
           bg-primary text-primary-foreground 
-          hover:bg-primary/90
+          hover:bg-primary-hover
+          transition duration-300 ease-in-out
         `,
+        /* Orange */
         secondary: `
           bg-secondary text-secondary-foreground 
-          hover:bg-secondary/90
+          hover:bg-secondary-hover
+          transition duration-300 ease-in-out
         `,
+        /* Green-outline */
         outline: `
-          border border-black bg-transparent text-black 
-          hover:bg-primary hover:text-primary-foreground hover:border-primary
+          border-2 border-black bg-transparent text-black 
+          hover:bg-dark hover:text-dark-foreground hover:border-dark
+          transition duration-300 ease-in-out
           `,
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 border border-destructive",
         ghost: "hover:bg-accent/10 text-foreground",

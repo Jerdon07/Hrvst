@@ -40,10 +40,12 @@ export default {
                 primary: {
                     DEFAULT: "hsl(var(--primary))",
                     foreground: "hsl(var(--primary-foreground))",
+                    hover: "hsl(var(--primary-hover))",
                 },
                 secondary: {
                     DEFAULT: "hsl(var(--secondary))",
                     foreground: "hsl(var(--secondary-foreground))",
+                    hover: "hsl(var(--secondary-hover))",
                 },
 
                 /* shadcn/ui compatible colors using CSS variables */
@@ -102,8 +104,14 @@ export default {
                     '100%': { transform: 'translateY(0)', opacity: '1' },
                 },
             },
+            backgroundImage: {
+                'hero-pattern' : "url('/assets/trading-post.jpg')",
+            }
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms,
+        require('tailwind-scrollbar-hide'),
+    ],
 };
