@@ -8,13 +8,14 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
+        './resources/js/**/*.tsx',
     ],
 
     theme: {
         extend: {
-            /* Color Palettes */
+            /* Custom Direct Colors (keep for backward compatibility) */
             colors: {
-                /* Main/Primary */
+                /* Main/Primary - kept for legacy components */
                 'primary'           :   '#1BFF22',
                 'primary-hover'     :   'color-mix(in srgb, black 50%, #1BFF22)',
                 
@@ -31,9 +32,59 @@ export default {
                 'danger-hover'      :   'color-mix(in srgb, black 50%, #FF2529)',
 
                 'text-highlight'    :   '#FF2529',
+
+                dark: {
+                    DEFAULT: "hsl(var(--dark))",
+                    foreground: "hsl(var(--dark-foreground))",
+                },
+                primary: {
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
+                },
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
+
+                /* shadcn/ui compatible colors using CSS variables */
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
+                destructive: {
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
+                },
+                muted: {
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
+                },
+                accent: {
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
+                },
+                popover: {
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
+                },
+                card: {
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
+                },
             },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
             },
             animation: {
                 'fadeIn': 'fadeIn 0.2s ease-in',

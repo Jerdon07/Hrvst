@@ -1,5 +1,5 @@
 import { Link, Head } from '@inertiajs/react';
-import Button from '@/Components/Buttons/Button';
+import { Button } from '@/Components/ui/button';
 
 export default function Welcome({ auth }) {
     return (
@@ -22,15 +22,15 @@ export default function Welcome({ auth }) {
 
                             <div className="flex items-center space-x-4">
                                 {auth.user ? (
-                                    <Button variant="primary" size="md" href={route('logout')} method="post">
+                                    <Button variant="default" size="md" href={route('logout')} method="post">
                                         Sign out
                                     </Button>
                                 ) : (
                                     <>
-                                        <Button variant="outline" size="md" href={route('login')}>
+                                        <Button variant='secondary' href={route('login')}>
                                             Log in
                                         </Button>
-                                        <Button variant="primary" size="md" href={route('register')}>
+                                        <Button variant='primary' href={route('register')}>
                                             Sign up
                                         </Button>
                                     </>
@@ -52,13 +52,13 @@ export default function Welcome({ auth }) {
                         <div className="flex gap-4 justify-center">
                             <Button
                                 href={route('farmers.index')}
-                                variant='primary' size='xl'
+                                variant='default' size='default'
                             >
                                 View Farmers
                             </Button>
                             <Button
                                 href={route('crops.index')}
-                                variant='primary' size='xl'
+                                variant='default' size='xl'
                             >
                                 View Crops
                             </Button>
