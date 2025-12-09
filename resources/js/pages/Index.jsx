@@ -1,73 +1,21 @@
 import { Link, Head } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
+import Navigation from '@/Pages/Home/HomeNav';
+import Hero from '@/Pages/Home/Hero';
 
 export default function Welcome({ auth }) {
     return (
         <>
             <Head title="Welcome to Hrvst" />
 
-            <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+            <div className="flex flex-col min-h-screen bg-gradient-to-br from-green-50 to-white">
                 {/* Navigation */}
-                <nav className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex justify-between items-center h-16">
-                            <div className="flex items-center space-x-2">
-                                <img 
-                                    src="/assets/hrvst.svg" 
-                                    alt="Hrvst" 
-                                    className="w-8 h-8 object-contain"
-                                />
-                                <span className="text-2xl font-bold text-gray-800">Hrvst</span>
-                            </div>
-
-                            <div className="flex items-center space-x-4">
-                                {auth.user ? (
-                                    <Button variant="default" size="md" href={route('logout')} method="post">
-                                        Sign out
-                                    </Button>
-                                ) : (
-                                    <>
-                                        <Button variant='secondary' href={route('login')}>
-                                            Log in
-                                        </Button>
-                                        <Button variant='primary' href={route('register')}>
-                                            Sign up
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <Navigation auth={auth}/>
 
                 {/* Hero Section */}
-                <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                            Welcome to <span className="text-green-600">Hrvst</span>
-                        </h1>
-                        <p className="text-xl text-gray-600 mb-8">
-                            Connecting farmers and traders in Benguet Province through a centralized crop pricing platform
-                        </p>
-                        <div className="flex gap-4 justify-center">
-                            <Button
-                                href={route('farmers.index')}
-                                variant='default' size='default'
-                            >
-                                View Farmers
-                            </Button>
-                            <Button
-                                href={route('crops.index')}
-                                variant='default' size='xl'
-                            >
-                                View Crops
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <Hero />
 
                 {/* Features */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+                <div className="py-16 px-10 border-t-2 border-black">
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="bg-white rounded-lg shadow-md p-6 text-center">
                             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
