@@ -1,6 +1,28 @@
-// Generic Container
+import { useState } from "react";
+import { usePage } from "@inertiajs/react";
+import AdminPendingPanel from "./AdminPendingPanel";
+import FarmerProfilePanel from "./FarmerProfilePanel";
 
-export default function RightSidebar({ isOpen, onToggle, children, badge, title }) {
+export default function RightSidebar({ title }) {
+    // Shared Data
+    const { auth, pendingFarmers } = usePage().props;
+    // Check if user is Admin or approved Farmer
+    const isAdmin = auth.user?.isAdmin;
+    const isApprovedFarmer = auth.user && !auth.user.isAdmin && auth.user.isApproved;
+    // Shows how many pending farmers are there
+    const badge = pendingFarmers?.length || 0;
+    // Changes the Sidebar content depending on the user
+    const memberContent = isAdmin
+        ? (
+            <AdminPendingPanel />
+        ) : isApprovedFarmer ? (
+            <FarmerProfilePanel />
+        ) : null;
+    const [isOpen, setIsOpen] = useState(false);
+    const toggle = () => {
+        setIsOpen(!isOpen);
+    }
+
     return (
         <>
             {/* Collapsed Strip - Always Visible */}
@@ -13,7 +35,7 @@ export default function RightSidebar({ isOpen, onToggle, children, badge, title 
             >
                 {/* Toggle Button */}
                 <button
-                    onClick={onToggle}
+                    onClick={toggle}
                     className="absolute left-2 top-4 text-black hover:text-green-950 transition-colors"
                 >
                     {!isOpen ? (
@@ -40,7 +62,7 @@ export default function RightSidebar({ isOpen, onToggle, children, badge, title 
                 {/* Expanded Content */}
                 {isOpen && (
                     <div className="pt-16 px-4 pb-4 overflow-y-auto h-full scrollbar-hide">
-                        {children}
+                        {memberContent}
                     </div>
                 )}
             </div>

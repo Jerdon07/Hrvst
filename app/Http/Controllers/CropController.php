@@ -29,7 +29,10 @@ class CropController extends Controller
         return Inertia::render('Crops/Index', [
             'crops' => $crops,
             'categories' => $categories,
-            'filters' => $request->only(['category_id', 'search']),
+            'filters' => [
+                'category_id' => $request->category_id,
+                'search' => $request->search,
+            ],
         ]);
     }
 }
