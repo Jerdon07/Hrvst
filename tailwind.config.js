@@ -15,69 +15,47 @@ export default {
         extend: {
             /* Custom Direct Colors (keep for backward compatibility) */
             colors: {
-                /* Main/Primary - kept for legacy components */
-                'primary'           :   '#1BFF22',
-                'primary-hover'     :   'color-mix(in srgb, black 50%, #1BFF22)',
-                
-                'secondary'         :   '#FF3912',
-                'secondary-hover'   :   'color-mix(in srgb, black 50%, #FF3912)',
+                background: "var(--background)",
+                foreground: "var(--foreground)",
 
-                'dark'              :   '#1B2226',
-                'dark-hover'        :   'color-mix(in srgb, black 50%, #1B2226)',
-
-                'safe'              :   '#263CFF',
-                'safe-hover'        :   'color-mix(in srgb, black 50%, #263CFF)',
-
-                'danger'            :   '#FF2529',
-                'danger-hover'      :   'color-mix(in srgb, black 50%, #FF2529)',
-
-                'text-highlight'    :   '#FF2529',
-
-                dark: {
-                    DEFAULT: "hsl(var(--dark))",
-                    foreground: "hsl(var(--dark-foreground))",
-                },
                 primary: {
-                    DEFAULT: "hsl(var(--primary))",
-                    foreground: "hsl(var(--primary-foreground))",
-                    hover: "hsl(var(--primary-hover))",
+                    DEFAULT: "var(--primary)",
+                    foreground: "var(--primary-foreground)",
                 },
                 secondary: {
-                    DEFAULT: "hsl(var(--secondary))",
-                    foreground: "hsl(var(--secondary-foreground))",
-                    hover: "hsl(var(--secondary-hover))",
-                },
-
-                /* shadcn/ui compatible colors using CSS variables */
-                border: "hsl(var(--border))",
-                input: "hsl(var(--input))",
-                ring: "hsl(var(--ring))",
-                background: "hsl(var(--background))",
-                foreground: "hsl(var(--foreground))",
-                
-                secondary: {
-                    DEFAULT: "hsl(var(--secondary))",
-                    foreground: "hsl(var(--secondary-foreground))",
-                },
-                destructive: {
-                    DEFAULT: "hsl(var(--destructive))",
-                    foreground: "hsl(var(--destructive-foreground))",
+                    DEFAULT: "var(--secondary)",
+                    foreground: "var(--secondary-foreground)",
                 },
                 muted: {
-                    DEFAULT: "hsl(var(--muted))",
-                    foreground: "hsl(var(--muted-foreground))",
+                    DEFAULT: "var(--muted)",
+                    foreground: "var(--muted-foreground)",
                 },
                 accent: {
-                    DEFAULT: "hsl(var(--accent))",
-                    foreground: "hsl(var(--accent-foreground))",
+                    DEFAULT: "var(--accent)",
+                    foreground: "var(--accent-foreground)",
+                },
+
+
+                dark: {
+                    DEFAULT: "var(--dark)",
+                    foreground: "var(--dark-foreground)",
+                },
+                destructive: {
+                    DEFAULT: "var(--destructive)",
+                    foreground: "var(--destructive-foreground)",
                 },
                 popover: {
-                    DEFAULT: "hsl(var(--popover))",
-                    foreground: "hsl(var(--popover-foreground))",
+                    DEFAULT: "var(--popover)",
+                    foreground: "var(--popover-foreground)",
                 },
+
+                border: "var(--border)",
+                input: "var(--input)",
+                ring: "var(--ring)",
+                
                 card: {
-                    DEFAULT: "hsl(var(--card))",
-                    foreground: "hsl(var(--card-foreground))",
+                    DEFAULT: "var(--card)",
+                    foreground: "var(--card-foreground)",
                 },
             },
             fontFamily: {
