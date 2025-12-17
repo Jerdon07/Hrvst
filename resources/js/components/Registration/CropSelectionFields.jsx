@@ -2,9 +2,9 @@ import { useState, useMemo } from 'react';
 import { useMedia } from 'react-use';
 
 import { Field, FieldLabel } from '@/components/ui/field';
-import { Item, ItemGroup, ItemActions, ItemContent, ItemTitle, ItemMedia, ItemDescription, ItemSeparator} from '@/components/ui/item';
+import { Item, ItemGroup, ItemActions, ItemContent, ItemTitle, ItemMedia, ItemDescription } from '@/components/ui/item';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from '@/components/ui/drawer';
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter, DrawerClose } from '@/components/ui/drawer';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { ScrollArea } from '../ui/scroll-area';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -33,7 +33,7 @@ export default function CropSelection({ data, setData, errors, categories, crops
     }
 
     const handleRemove = (cropID) => {
-        const updated = data.crops.filter(id => id != cropID);
+        const updated = data.crops.filter(id => id !== cropID);
         setData('crops', updated);
         setSelection(updated);
     }
@@ -56,14 +56,14 @@ export default function CropSelection({ data, setData, errors, categories, crops
 
             <Field className='flex-1 flex'>
                 <FieldLabel htmlFor='crops' className='flex-0 h-full'>
-                    Vegetables({data.crops.length}/3)
+                    Vegetables({data.selectedCrops.length}/3)
                 </FieldLabel>
 
                 <div className='flex-1'>
                     {selectedCrops.length > 0 && (
                         <ItemGroup className='flex-grow h-[278px] flex flex-col gap-2 mb-3'>
                             {selectedCrops.map(crop => (
-                                <Item key={crop} variant='outline'>
+                                <Item key={crop.id} variant='outline'>
                                     <ItemMedia>
                                         <Avatar className='rounded-sm'>
                                             <AvatarImage src={`/storage/${crop.image_path}`}/>
