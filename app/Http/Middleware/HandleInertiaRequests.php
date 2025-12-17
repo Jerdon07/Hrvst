@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
+use App\Models\Crop;
+use App\Models\Farmer;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -48,7 +50,7 @@ class HandleInertiaRequests extends Middleware
 
     // If user is admin, add pending farmers
     if ($user && $user->isAdmin) {
-        $sharedData['pendingFarmers'] = \App\Models\Farmer::with(['user', 'municipality', 'barangay', 'crops'])
+        $sharedData['pendingFarmers'] = Farmer::with(['user', 'municipality', 'barangay', 'crops'])
             ->whereHas('user', function($q) {
                 $q->where('isApproved', false);
             })
@@ -56,8 +58,8 @@ class HandleInertiaRequests extends Middleware
     }
 
     // If user is an approved farmer, add all crops for selection
-    if ($user && !$user->isAdmin && $user->isApproved && $user->farmer) {
-        $sharedData['allCrops'] = \App\Models\Crop::with('category')->get();
+    if ($user && !$user->isAdmin && $user->farmer) {
+        $sharedData['allCrops'] = Crop::with('category')->get();
     }
 
     return $sharedData;

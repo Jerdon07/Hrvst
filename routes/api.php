@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Barangay;
 use App\Http\Controllers\FarmerController;
+use App\Http\Controllers\MunicipalityController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -15,6 +16,8 @@ Route::get('/', [CategoryController::class]);
 // --------------------------------------------------------
 // Public API Routes for registration
 // --------------------------------------------------------
+Route::get('/municipalities/{municipality}', [MunicipalityController::class, 'show']);
+
 Route::get('/barangays', function (Request $request) {
     $barangays = Barangay::where('municipality_id', $request->municipality_id)
         ->get();
