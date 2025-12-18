@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import ResponsiveOverlay from '../responsive/responsiveOverlay';
 import MapDialog from '@/components/Registration/MapDialog';
+
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from '@/components/ui/select';
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from '@/components/ui/drawer';
 import { Spinner } from '@/components/ui/spinner';
-
-import InputError from '@/components/InputError';
 import { Button } from '@/components/ui/button';
+import InputError from '@/components/InputError';
+
 import { MapPinned } from 'lucide-react';
 
 export default function Location({ data, setData, errors, municipalities, }) {
     /* Address */
     const [barangays, setBarangays] = useState([]);
     const [loadingBarangays, setLoadingBarangays] = useState(false);
+    /* Overlay Button */
+    const [open, setOpen] = useState(false)
     /* Map */
     const [mapCenter, setMapCenter] = useState([16.4484, 120.5905]);
     const [mapZoom, setMapZoom] = useState(10);
@@ -126,45 +129,32 @@ export default function Location({ data, setData, errors, municipalities, }) {
 
             <Field className='flex-1'>
                 <FieldLabel htmlFor='button'>Geolocation</FieldLabel>
-                <Drawer>
-                    <DrawerTrigger asChild disabled={!data.barangay_id || loadingCoordinates}>
-                        <Button variant='secondary'>{loadingCoordinates ? 'Loading Geolocation' : 'Set Geolocation'}</Button>
-                    </DrawerTrigger>
+                <Button disabled={!data.barangay_id || loadingCoordinates} onClick={() => setOpen(true)} variant='secondary'>
+                    {loadingCoordinates ? 'Loading Geolocation' : 'Set Geolocation'}
+                </Button>
 
-                    <DrawerContent>
-                        <div className=' mx-auto w-full max-w-md gap-7'>
-                            <DrawerHeader className='gap-4'>
-                                <DrawerTitle>Set Geolocation</DrawerTitle>
-                                <DrawerDescription>
-                                    Set your farm&apos;s geolocation by selecting it on the map.
-                                </DrawerDescription>
-                            </DrawerHeader>
-
-                            <div
-                                onPointerDown={(e) => e.stopPropagation()}
-                                onPointerMove={(e) => e.stopPropagation()}
-                                onPointerUp={(e) => e.stopPropagation()}
-                            >
-                                <MapDialog
-                                center={mapCenter}
-                                zoom={mapZoom}
-                                onSelect={handleMapClick}
-                                markerPosition={markerPosition}
-                            />
-                            </div>
-
-                            <DrawerFooter>
-                                <DrawerClose asChild>
-                                    <Button variant='outline'>Cancel</Button>
-                                </DrawerClose>
-                                <DrawerClose asChild>
-                                    <Button onClick={saveData}>Save</Button>
-                                </DrawerClose>
-                            </DrawerFooter>
-                        </div>
-                    </DrawerContent>
-                </Drawer>
-                <InputError message={[errors.latitude, errors.longitude]} className="mt-2" />
+                <ResponsiveOverlay
+                    open={open}
+                    onOpenChange={setOpen}
+                    title='Set geolocation'
+                >
+                    <div
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onPointerMove={(e) => e.stopPropagation()}
+                        onPointerUp={(e) => e.stopPropagation()}
+                    >
+                        <MapDialog
+                            center={mapCenter}
+                            zoom={mapZoom}
+                            onSelect={handleMapClick}
+                            markerPosition={markerPosition}
+                        />
+                    </div>
+                    <div className='flex w-full gap-4'>
+                        <Button onClick={() => setOpen(false)} variant='outline' className='flex-1'>Cancel</Button>
+                        <Button onClick={() => {saveData; setOpen(false);}} className='flex-1'>Save</Button>
+                    </div>
+                </ResponsiveOverlay>
             </Field>
         </>
     );
