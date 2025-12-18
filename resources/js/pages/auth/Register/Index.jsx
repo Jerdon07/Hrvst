@@ -11,7 +11,7 @@ import CropSelection from "@/components/Registration/CropSelectionFields";
 import { FieldGroup, Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, CircleCheck } from "lucide-react";
 
 export default function Register({municipalities=[], categories=[], crops=[]}) {
 
@@ -42,6 +42,19 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
         post(route('register'));
     }
 
+    const isStep1Valid =
+        data.name &&
+        data.email &&
+        data.password &&
+        data.password_confirmation &&
+        data.phone_number
+
+    const isStep2Valid =
+        data.municipality_id &&
+        data.barangay_id &&
+        data.latitude &&
+        data.longitude
+
     console.log(data.name);
 
     return (
@@ -66,12 +79,16 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
 
                     <Field className="flex-0 grid grid-cols-3 gap-4">
                         {step > 1 && (<>
-                            <Button onClick={prevStep} variant="outline" disabled={processing} className="col-span-1">
+                            <Button onClick={prevStep} variant="outline" className="col-span-1"
+                                disabled={processing}
+                            >
                                 <><ArrowLeft/>{'Back'}</>
                             </Button>
                         </>)}
                         {step < 3 ? (<>
-                            <Button onClick={nextStep} disabled={processing} className="col-span-3 col-start-2">
+                            <Button onClick={nextStep} type="button" className="col-span-3 col-start-2"
+                                disabled={processing || (step === 1 && !isStep1Valid) || (step === 2 && !isStep2Valid)}
+                            >
                                 {processing
                                 ? <Spinner/>
                                 : (<>{'Next'}<ArrowRight/></>)}
@@ -80,7 +97,7 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
                             <Button type="submit" disabled={processing} className="col-span-3 col-start-2">
                                 {processing
                                 ? <Spinner/>
-                                : (<>{'Next'}<ArrowRight/></>)}
+                                : (<>{'Next'}<CircleCheck/></>)}
                             </Button>
                         </>)}
                     </Field>

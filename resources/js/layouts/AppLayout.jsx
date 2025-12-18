@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import Navigation from '@/Components/Navigation/Navigation';
-import LeftSidebar from '@/Components/Sidebars/LeftSidebar';
-import RightSidebar from '@/Components/Sidebars/RightSidebar';
+import Navigation from '@/components/Navigation/Navigation';
+import LeftSidebar from '@/components/Sidebars/LeftSidebar';
+import RightSidebar from '@/components/Sidebars/RightSidebar';
 
 export default function AppLayout({ 
     children, 

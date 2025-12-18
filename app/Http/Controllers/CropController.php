@@ -11,7 +11,7 @@ class CropController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Crop::with('category');
+        $query = Crop::orderBy('name', 'asc')->with('category');
 
         // Filter by category
         if ($request->filled('category_id')) {
