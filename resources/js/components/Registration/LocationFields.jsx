@@ -152,7 +152,7 @@ export default function Location({ data, setData, errors, municipalities, }) {
                     </div>
                     <div className='flex w-full gap-4'>
                         <Button onClick={() => setOpen(false)} variant='outline' className='flex-1'>Cancel</Button>
-                        <Button onClick={() => {saveData; setOpen(false);}} className='flex-1'>Save</Button>
+                        <Button onClick={() => {saveData(); setOpen(false);}} className='flex-1'>Save</Button>
                     </div>
                 </ResponsiveOverlay>
             </Field>
