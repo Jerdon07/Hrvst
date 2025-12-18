@@ -52,8 +52,8 @@ class RegisteredUserController extends Controller
             'barangay_id' => 'required|exists:barangays,id',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
-            'image_path' => 'nullable|image|max:2048',
-            'crops' => 'required|array|min:1|max:5',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'crops' => 'nullable|array|min:1|max:3',
             'crops.*' => 'exists:crops,id',
         ]);
 
