@@ -1,5 +1,5 @@
 /* Hooks */
-import { usePage, useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
 /* Layout */
 import Layout from "@/layouts/RegistrationLayout"
@@ -11,7 +11,7 @@ import CropSelection from "@/components/Registration/CropSelectionFields";
 import { FieldGroup, Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ArrowRight, ArrowLeft, CircleCheck } from "lucide-react";
+import { ArrowRight, ArrowLeft, House, CircleCheck } from "lucide-react";
 
 export default function Register({municipalities=[], categories=[], crops=[]}) {
 
@@ -78,15 +78,24 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
                     )}
 
                     <Field className="flex-0 grid grid-cols-3 gap-4">
-                        {step > 1 && (<>
-                            <Button onClick={prevStep} variant="outline" className="col-span-1"
+                        {step < 2 ? (<>
+                            <Link href='/'>
+                                <Button onClick={'/'} type="button" variant="outline" className="col-span-1 w-full"
+                                    disabled={processing}
+                                >
+                                    <><House/>{'Home'}</>
+                                </Button>
+                            </Link>
+                        </>) : (<>
+                            <Button onClick={prevStep} type="button" variant="outline" className="col-span-1 w-full"
                                 disabled={processing}
                             >
                                 <><ArrowLeft/>{'Back'}</>
                             </Button>
                         </>)}
+
                         {step < 3 ? (<>
-                            <Button onClick={nextStep} type="button" className="col-span-3 col-start-2"
+                            <Button onClick={nextStep} type="button" className="col-span-3 col-start-2 w-full"
                                 disabled={processing || (step === 1 && !isStep1Valid) || (step === 2 && !isStep2Valid)}
                             >
                                 {processing
@@ -94,7 +103,7 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
                                 : (<>{'Next'}<ArrowRight/></>)}
                             </Button>
                         </>) : (<>
-                            <Button type="submit" disabled={processing} className="col-span-3 col-start-2">
+                            <Button type="submit" disabled={processing} className="col-span-3 col-start-2 w-full">
                                 {processing
                                 ? <Spinner/>
                                 : (<>{'Next'}<CircleCheck/></>)}
