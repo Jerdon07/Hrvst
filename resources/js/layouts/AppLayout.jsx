@@ -45,8 +45,8 @@ export default function AppLayout({
                     )}
 
                     {/* Main Content Area */}
-                    <div className='grow overflow-y-auto pr-12 pointer-events-none'>
-                        <div className='pointer-events-auto'>
+                    <div className='grow overflow-y-auto pr-12 pointer-events-none '>
+                        <div className='pointer-events-auto p-6'>
                             {children}
                         </div>
                     </div>
