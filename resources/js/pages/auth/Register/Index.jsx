@@ -1,4 +1,3 @@
-/* Hooks */
 import { Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import Layout from "@/layouts/RegistrationLayout"
@@ -27,6 +26,13 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
     });
 
     const [step, setStep] = useState(1);
+
+    const steps = [
+        { id: 1, label: "Personal" },
+        { id: 2, label: "Location" },
+        { id: 3, label: "Farm Image" },
+        { id: 4, label: "Crops" },
+    ];
 
     const prevStep = () => {
         setStep(step - 1);
@@ -57,6 +63,8 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
         <Layout>
             <form onSubmit={submit} className="p-6 md:p-8">
                 <FieldSet>
+                    <StepsBar step={step} />
+
                     {step === 1 && (
                         <Personal data={data} setData={setData} errors={errors}/>
                     )}
@@ -100,4 +108,46 @@ export default function Register({municipalities=[], categories=[], crops=[]}) {
             </form>
         </Layout>
     )
+
+    function StepsBar({ step }) {
+        return (
+            <div>
+                <ol className="flex items-center justify-between">
+                    {steps.map((s, index) => {
+                        const isCompleted = step > s.id;
+                        const isCurrent = step === s.id;
+    
+                        return (
+                            <li key={s.id} className="flex-1 flex items-center">
+                                <div className="flex flex-col items-center w-full">
+                                    <div
+                                        className={`
+                                            flex items-center justify-center w-9 h-9 rounded-full border text-sm font-semibold
+                                            ${isCompleted && "bg-primary text-white border-primary"}
+                                            ${isCurrent && "border-primary text-primary"}
+                                            ${!isCompleted && !isCurrent && "border-muted text-muted-foreground"}
+                                        `}
+                                    >
+                                        {isCompleted ? <CircleCheck className="w-5 h-5" /> : s.id}
+                                    </div>
+                                    <span className="mt-2 text-xs font-medium text-center">
+                                        {s.label}
+                                    </span>
+                                </div>
+    
+                                {index !== steps.length - 1 && (
+                                    <div
+                                        className={`
+                                            flex-1 h-[2px] mx-2
+                                            ${step > s.id ? "bg-primary" : "bg-muted"}
+                                        `}
+                                    />
+                                )}
+                            </li>
+                        );
+                    })}
+                </ol>
+            </div>
+        );
+    }
 }
