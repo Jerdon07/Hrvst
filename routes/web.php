@@ -21,7 +21,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/farmers', [FarmerController::class, 'index'])->name('farmers.index');
 
@@ -42,20 +42,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['approved.farmer'])->group(function () {
     Route::get('/profile', [FarmerProfileController::class, 'show'])->name('profile.edit');
     Route::patch('/profile', [FarmerProfileController::class, 'update'])->name('profile.update');
-});
-// --------------------------------------------------------
-// Auth Routes for Admin
-// --------------------------------------------------------
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    // Crops management endpoints (no separate admin pages)
-    Route::get('/crops', [AdminCropController::class, 'create'])->name('crops.create'); // Index
-    Route::post('/crops', [AdminCropController::class, 'store'])->name('crops.store'); // Store
-    Route::post('/crops/{crop}', [AdminCropController::class, 'update'])->name('crops.update'); // Update
-    Route::delete('/crops/{crop}', [AdminCropController::class, 'destroy'])->name('crops.destroy'); // Delete
-    // Pending Farmers actions
-    Route::get('/farmers/pending/{user}', [AdminFarmerController::class, 'show'])->name('admin.farmers.show');
-    Route::post('/farmers/pending/{user}/approve', [AdminFarmerController::class, 'approve'])->name('admin.farmers.approve'); // Approve Pending Farmers
-    Route::delete('/farmers/pending/{user}/delete', [AdminFarmerController::class, 'delete'])->name('admin.farmers.delete');    // Reject Pending Farmers
 });
 
 require __DIR__.'/auth.php';

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCropController;
+use App\Http\Controllers\Admin\AdminFarmerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -65,4 +67,20 @@ Route::middleware('auth')->group(function () {
         }
         return Inertia::render('Auth/Pending');
     })->name('pending');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('admin/Index');
+    })->name('admin');
+
+    Route::get('/crops', [AdminCropController::class, 'index'])->name('crops'); // Index
+    Route::post('/crops', [AdminCropController::class, 'store'])->name('crops.store'); // Store
+    Route::post('/crops/{crop}', [AdminCropController::class, 'update'])->name('crops.update'); // Update
+    Route::delete('/crops/{crop}', [AdminCropController::class, 'destroy'])->name('crops.destroy'); // Delete
+    // Pending Farmers actions
+    Route::get('farmers', [AdminFarmerController::class, 'index'])->name('farmers');
+    Route::get('/farmers/pending/{user}', [AdminFarmerController::class, 'show'])->name('admin.farmers.show');
+    Route::post('/farmers/pending/{user}/approve', [AdminFarmerController::class, 'approve'])->name('farmers.approve'); // Approve Pending Farmers
+    Route::delete('/farmers/pending/{user}/delete', [AdminFarmerController::class, 'delete'])->name('farmers.delete');    // Reject Pending Farmers
 });
