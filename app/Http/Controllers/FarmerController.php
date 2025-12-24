@@ -12,33 +12,24 @@ class FarmerController extends Controller
 {
     public function index(Request $request)
     {
+        $municipalities = Municipality::with('barangays')->get();
+        
         $query = Farmer::with([
             'user', 
             'municipality', 
             'barangay', 
-            'crops' => function ($query) {
-                $query->wherePivot('status', 'active');
-            }
-        ])
-            ->whereHas('user', function($q) {
+            'crops',
+        ])->whereHas('user', function($q) {
                 $q->where('isApproved', true);
             });
 
-        // Filter by municipality
         if ($request->filled('municipality_id')) {
             $query->where('municipality_id', $request->municipality_id);
         }
 
-        // Filter by barangay
         if ($request->filled('barangay_id')) {
             $query->where('barangay_id', $request->barangay_id);
         }
-
-        $farmers = $query->get();
-        $municipalities = Municipality::all();
-
-        // Get barangays based on current filters
-        $barangays = [];
         
         if ($request->filled('municipality_id')) {
             $barangays = Barangay::where('municipality_id', $request->municipality_id)
@@ -47,9 +38,8 @@ class FarmerController extends Controller
 
         // Data passed to Farmers Page as properties
         return Inertia::render('Farmers/Index', [
-            'farmers' => $farmers,
+            'farmers' => $query->get(),
             'municipalities' => $municipalities,
-            'barangays' => $barangays,
             'filters' => $request->only(['municipality_id', 'barangay_id']),
         ]);
     }
