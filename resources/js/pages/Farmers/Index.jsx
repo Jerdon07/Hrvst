@@ -1,15 +1,99 @@
-import { useState, useEffect, useRef } from 'react';
+import { 
+    useState,
+    useEffect,
+    useRef,
+ } from 'react';
+import AppLayout from '@/layouts/app-layout';
+import AddressFilter from '@/components/Sidebar/Farmers/address-filter';
+import BaseMap from '@/components/Map/BaseMap';
+import MapResizer from '@/components/Map/map-resizer'
+import MapUpdater from '@/components/Map/MapUpdater';
+import FarmerMarker from '@/components/Map/FarmerMarker';
+/* import { useState, useEffect, useRef } from 'react';
 import { router, usePage } from '@inertiajs/react';
-import AppLayout from '@/Layouts/AppLayout';
-import BaseMap from '@/Components/Map/BaseMap';
-import FarmerMarker from '@/Components/Map/FarmerMarker';
-import MapUpdater from '@/Components/Map/MapUpdater';
-import FarmerDetailModal from '@/Components/Modals/Farmers/FarmerDetailModal';
-import AddressFilter from '@/Components/Farmers/AddressFilter';
-import AdminPendingPanel from '@/Components/Sidebars/AdminPendingPanel';
-import FarmerProfilePanel from '@/Components/Sidebars/FarmerProfilePanel';
+import BaseMap from '@/components/Map/BaseMap';
 
-export default function Index({ farmers, municipalities, barangays: initialBarangays, filters }) {
+
+import FarmerDetailModal from '@/components/Modals/Farmers/FarmerDetailModal'; */
+
+const Index = ({ farmers, municipalities, filters }) => {
+    // State management
+    const [selectedMunicipality, setSelectedMunicipality] = useState(filters.municipality_id || '');
+    const [selectedBarangay, setSelectedBarangay] = useState(filters.barangay_id || '');
+    const [selectedFarmer, setSelectedFarmer] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const markersRef = useRef([]);
+
+    // Markers
+    useEffect(() => {
+        markersRef.current = [];
+    }, [farmers])
+
+    // Popups
+    useEffect(() => {
+        requestAnimationFrame(() => {
+            markersRef.current.forEach(m => m.openPopup())
+        })
+    }, [farmers])
+
+    const handleViewDetails = async (farmerId) => {
+        try {
+            const response = await fetch(route('api.farmers.show', farmerId));
+            const farmerData = await response.json();
+            setSelectedFarmer(farmerData);
+            setIsDetailModalOpen(true);
+        } catch (error) {
+            console.error('Error fetching farmer details:', error);
+        }
+    };
+
+    // Map calculations
+    const getMapCenterAndZoom = () => {
+        if (farmers.length === 0) return { center: [16.4, 120.6], zoom: 11 };
+        const avgLat = farmers.reduce((sum, f) => sum + parseFloat(f.latitude), 0) / farmers.length;
+        const avgLng = farmers.reduce((sum, f) => sum + parseFloat(f.longitude), 0) / farmers.length;
+        return { center: [avgLat, avgLng], zoom: 11 }
+    }
+    const { center, zoom } = getMapCenterAndZoom()
+
+    return (
+        <AppLayout
+            title='Farmers'
+            sidebarHeader='Farmer Filters'
+            sidebarContent={
+                <AddressFilter
+                    municipalities={municipalities}
+                    filters={filters}
+                />
+            }
+        >
+            <div className='absolute inset-0 rounded-xl overflow-hidden'>
+                <BaseMap
+                    center={center}
+                    zoom={zoom}
+                >
+                    <MapResizer />
+                    <MapUpdater
+                        center={center}
+                        zoom={zoom}
+                    />
+
+                    {farmers.map(farmer => (
+                        <FarmerMarker
+                            key={farmer.id}
+                            farmer={farmer}
+                            onViewDetails={handleViewDetails}
+                        />
+                    ))}
+                </BaseMap>
+            </div>
+        </AppLayout>
+    )
+}
+
+export default Index;
+
+/* export default function Index({ farmers, municipalities, barangays: initialBarangays, filters }) {
     const { auth, pendingFarmers } = usePage().props;
     const isAdmin = auth.user?.isAdmin;
     const isApprovedFarmer = auth.user && !auth.user.isAdmin && auth.user.isApproved;
@@ -133,4 +217,4 @@ export default function Index({ farmers, municipalities, barangays: initialBaran
             />
         </AppLayout>
     );
-}
+} */
