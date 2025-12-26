@@ -15,8 +15,15 @@ class AdminCropController extends Controller
     {
         $crops = Crop::with('category')->get();
 
-        return Inertia::render('admin/crops/Index', [
+        return Inertia::render('admin/crops/index', [
             'crops' => $crops,
+        ]);
+    }
+
+    public function show(Crop $crop)
+    {
+        return Inertia::render('admin/crops/Show', [
+            'crop' => $crop
         ]);
     }
 
