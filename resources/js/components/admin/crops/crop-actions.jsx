@@ -34,6 +34,15 @@ export default function CropActions({ crop }) {
             <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
                     <Link
+                        href={route('admin.crops.show', crop.id)}
+                    >
+                        <ChartArea />
+                        Details
+                    </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild>
+                    <Link
                         href={route('admin.crops.edit', crop)}
                     >
                         <SquarePen />
