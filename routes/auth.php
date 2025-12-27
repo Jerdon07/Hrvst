@@ -78,10 +78,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
 
     Route::resource('crops', AdminCropController::class);
 
-    Route::prefix('prices')->as('prices.')->group(function () {
-        Route::get('/', [AdminPriceController::class, 'index'])->name('index');
-    });
-
     // Pending Farmers actions
     Route::get('farmers', [AdminFarmerController::class, 'index'])->name('farmers');
     Route::get('/farmers/pending/{user}', [AdminFarmerController::class, 'show'])->name('admin.farmers.show');
