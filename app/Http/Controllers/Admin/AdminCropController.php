@@ -83,8 +83,11 @@ class AdminCropController extends Controller
 
     public function edit(Crop $crop)
     {
+        $categories = Category::all();
+
         return Inertia::render('admin/crops/edit', [
             'crop' => $crop,
+            'categories' => $categories,
         ]);
     }
 
