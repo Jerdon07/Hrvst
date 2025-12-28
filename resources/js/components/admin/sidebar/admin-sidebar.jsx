@@ -4,7 +4,13 @@ import NavUser from "@/components/sidebar/nav-user";
 
 import { usePage } from "@inertiajs/react";
 import { AdminPages } from "@/components/admin/sidebar/admin-pages";
-import { Sprout, PhilippinePeso } from "lucide-react";
+import {
+    Sprout,
+    PhilippinePeso,
+    MapPinned,
+    ChartBarBig,
+    ChartCandlestick
+} from "lucide-react";
 import { SquareUser } from "lucide-react";
 import { 
     Sidebar,
@@ -14,35 +20,37 @@ import {
 
 const groups = [
     {
-        title: "Trade Data",
+        title: "Vegetables Dashboard",
         pages: [
             {
-                title: 'Vegetables Dashboard',
-                url: '/admin/crops',
+                title: 'Spreadsheet',
+                url: 'admin.crops.index',
                 icon: Sprout,
+            }, {
+                title: 'Prices Comparison',
+                url: 'admin.prices.index',
+                icon: ChartCandlestick,
             },
         ]
     }, {
-        title: "Farmers Info",
+        title: "Farmers Dashboard",
         pages: [
             {
-                title: 'Farmers Dashboard',
-                url: '/admin/farmers',
+                title: 'Spreadsheet',
+                url: 'admin.farmers.index',
                 icon: SquareUser,
+            }, {
+                title: 'Geolocation',
+                url: 'admin.farmers.index',
+                icon: MapPinned,
+            }, {
+                title: 'Municipalities',
+                url: 'admin.farmers.index',
+                icon: ChartBarBig,
             },
         ]
     }
 ]
-const pages = [{
-    title: "Crops Dashboard",
-    url: "/admin/crops",
-    icon: Sprout,
-    isActive: true
-}, {
-    title: "Farmers Dashboard",
-    url: "/admin/farmers",
-    icon: SquareUser,
-}]
 
 export default function AdminSidebar({
     user,
