@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminCropController;
 use App\Http\Controllers\Admin\AdminFarmerController;
-use App\Http\Controllers\AdminPriceController;
+use App\Http\Controllers\Admin\AdminPriceController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -77,9 +77,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     })->name('index');
 
     Route::resource('crops', AdminCropController::class);
+    Route::get('prices', [AdminPriceController::class, 'index'])->name('prices.index');
 
     // Pending Farmers actions
-    Route::get('farmers', [AdminFarmerController::class, 'index'])->name('farmers');
+    Route::get('farmers', [AdminFarmerController::class, 'index'])->name('farmers.index');
     Route::get('/farmers/pending/{user}', [AdminFarmerController::class, 'show'])->name('admin.farmers.show');
     Route::post('/farmers/pending/{user}/approve', [AdminFarmerController::class, 'approve'])->name('farmers.approve'); // Approve Pending Farmers
     Route::delete('/farmers/pending/{user}/delete', [AdminFarmerController::class, 'delete'])->name('farmers.delete');    // Reject Pending Farmers
