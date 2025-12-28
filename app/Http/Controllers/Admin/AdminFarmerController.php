@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Barangay;
 use App\Models\Farmer;
 use App\Models\Municipality;
-use App\Models\Sitio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,6 +13,12 @@ use Inertia\Inertia;
 class AdminFarmerController extends Controller
 {
     public function index(Request $request) {
+        $farmers = Farmer::with([
+            'user',
+            'municipality',
+            'barangay',
+            'crops',
+        ]);
         $query = Farmer::with(['user', 'municipality', 'barangay', 'crops']);
 
         // Filter by Municipality
@@ -35,7 +40,7 @@ class AdminFarmerController extends Controller
 
         $municipalities = Municipality::all();
 
-        return Inertia::render('admin/farmers/Index', [
+        return Inertia::render('admin/farmers/index', [
             'approvedFarmers' => $approvedFarmers->get(),
             'pendingFarmers' => $pendingFarmers->latest()->get(),
             'municipalities' => $municipalities,
