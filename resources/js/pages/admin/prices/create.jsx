@@ -19,7 +19,7 @@ export default function Create({ crop }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post(route("admin.prices.store", crop.id), {
+    post(route("admin.crops.prices.store", crop.id), {
       preserveScroll: true,
     });
   };
