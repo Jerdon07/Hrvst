@@ -87,7 +87,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     
     /* Farmers Dashboard */
     Route::get('farmers', [AdminFarmerController::class, 'index'])->name('farmers.index');
-    Route::get('/farmers/pending/{user}', [AdminFarmerController::class, 'show'])->name('admin.farmers.show');
+    // No farmers create and store
+    Route::get('/farmers/pending/{farmer}', [AdminFarmerController::class, 'show'])->name('farmers.show');
+    // No farmers edit and update
     Route::post('/farmers/pending/{user}/approve', [AdminFarmerController::class, 'approve'])->name('farmers.approve'); // Approve Pending Farmers
     Route::delete('/farmers/pending/{user}/delete', [AdminFarmerController::class, 'delete'])->name('farmers.delete');    // Reject Pending Farmers
 
