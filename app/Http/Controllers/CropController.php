@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CropResource;
 use App\Models\Crop;
 use App\Models\Category;
 use App\Services\CropService;
@@ -17,7 +18,7 @@ class CropController extends Controller
         $categories = Category::withCount('crops')->get();
 
         return Inertia::render('crops/index', [
-            'crops' => $crops,
+            'crops' => CropResource::collection($crops)->resolve(),
             'categories' => $categories,
             'filters' => $request->only(['category_id', 'search']),
         ]);
