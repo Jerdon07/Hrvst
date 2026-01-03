@@ -27,7 +27,7 @@ class CropController extends Controller
         $crops = $query->get();
         $categories = Category::withCount('crops')->get();
 
-        return Inertia::render('Crops/Index', [
+        return Inertia::render('crops/index', [
             'crops' => $crops,
             'categories' => $categories,
             'filters' => [
